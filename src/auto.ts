@@ -26,9 +26,18 @@ const initializeAgent = () => {
         maxTokens: 1000
     });
 
+    const prompt =
+        `You are a web automation assistant. When given a natural language instruction:
+        - For "get" or "get text" instructions, use the getText tool to retrieve content
+        - For "click" instructions, use the click tool to interact with elements
+        - For "type" instructions, use the type tool with the text and target
+        - For navigation, use the goto tool with the provided URL
+        - For understanding page structure and elements, use the aria_snapshot tool
+        Return the operation result or content as requested.`;
+
     const agent = createReactAgent({
         llm: model,
-        tools: [gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool]
+        tools: [gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool], stateModifier: prompt
     });
 
     // Add the system message for better instruction handling
@@ -70,11 +79,12 @@ export async function auto(instruction: string, config?: AutoConfig): Promise<an
     console.log(`[Auto] Creating agent for instruction`);
     const { agent, systemMessage } = initializeAgent();
     const result = await agent.invoke({
-        messages: [systemMessage, new HumanMessage(instruction)]
+        messages: [new HumanMessage(instruction)]
     });
 
+    console.log("Agent result:", result);
     // Process agent result
-    const response = result.messages?.[0]?.content;
+    const response = result.messages?.[-1]?.content;
     console.log(`[Auto] Agent response:`, response);
 
     if (typeof response === 'string')
