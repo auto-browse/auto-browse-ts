@@ -1,31 +1,60 @@
 import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+import { z } from 'zod';
+import { runAndWait } from './utils';
 import { sessionManager } from '../browser';
+import type { Context } from '../browser/context';
 
-// Tool to type text
+/**
+ * Schema for typing text into elements with descriptions for the AI model
+ */
+const typeSchema = z.object({
+    element: z.string().describe('Human-readable element description for the target field'),
+    ref: z.string().describe('Element reference from page snapshot to locate the field'),
+    text: z.string().describe('The text to type into the element'),
+    submit: z.boolean().optional().describe('Whether to submit by pressing Enter after typing').default(false)
+});
+
 export const typeTool = tool(
-    async ({ value, target }) => {
+    async ({ element, ref, text, submit }) => {
         try
         {
-            const page = sessionManager.getPage();
-            const element = await page.getByLabel(target, { exact: false })
-                .or(page.getByPlaceholder(target, { exact: false }))
-                .or(page.getByRole('textbox', { name: target }))
-                .or(page.getByTestId(target));
+            console.log(`[Type Tool] Starting operation:`, { element, ref, text, submit });
 
-            await element.fill(value);
-            return "Successfully entered text";
+            const context = {
+                existingPage: () => sessionManager.getPage(),
+                refLocator: (ref: string) => sessionManager.getPage().locator(ref)
+            } as Context;
+
+            const result = await runAndWait(
+                context,
+                `Typed "${text}" into "${element}"`,
+                async () => {
+                    const locator = context.refLocator(ref);
+                    console.log(`[Type Tool] Filling text into element`);
+                    await locator.fill(text);
+
+                    if (submit)
+                    {
+                        console.log(`[Type Tool] Submitting with Enter key`);
+                        await locator.press('Enter');
+                    }
+                    console.log(`[Type Tool] Operation successful`);
+                },
+                true
+            );
+
+            console.log(`[Type Tool] Operation completed with result:`, result);
+            return result;
         } catch (error)
         {
-            return `Failed to type: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            const errorMessage = `Failed to type: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            console.error(`[Type Tool] Error:`, errorMessage);
+            return errorMessage;
         }
     },
     {
         name: "type",
-        description: "Type text into an input field",
-        schema: z.object({
-            value: z.string().describe("The text to type"),
-            target: z.string().describe("The input field identifier (label, placeholder, or test ID)"),
-        }),
+        description: "Type text into an editable element on the page",
+        schema: typeSchema
     }
 );
