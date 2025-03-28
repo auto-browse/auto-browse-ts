@@ -1,11 +1,23 @@
-import { Frame, FrameLocator, Locator } from '@playwright/test';
+import { FileChooser, Frame, FrameLocator, Locator, Page } from '@playwright/test';
 import { sessionManager } from './session-manager';
 
 export class Context {
   private static instance: Context;
   private _lastSnapshotFrames: FrameLocator[] = [];
+  private _fileChooser: FileChooser | undefined;
+
+  private _listenerInitialized: boolean = false;
 
   private constructor() { }
+
+  private initializeListener() {
+    if (!this._listenerInitialized)
+    {
+      const page = sessionManager.getPage();
+      page.on('filechooser', chooser => this._fileChooser = chooser);
+      this._listenerInitialized = true;
+    }
+  }
 
   static getInstance(): Context {
     if (!Context.instance)
@@ -52,6 +64,34 @@ export class Context {
     }
 
     return frame.locator(`aria-ref=${ref}`);
+  }
+
+  existingPage(): Page {
+    return sessionManager.getPage();
+  }
+
+  async close() {
+    const page = sessionManager.getPage();
+    await page.close();
+  }
+
+  async submitFileChooser(paths: string[]) {
+    this.initializeListener();
+    if (!this._fileChooser)
+    {
+      throw new Error('No file chooser visible');
+    }
+    await this._fileChooser.setFiles(paths);
+    this._fileChooser = undefined;
+  }
+
+  hasFileChooser(): boolean {
+    this.initializeListener();
+    return !!this._fileChooser;
+  }
+
+  clearFileChooser(): void {
+    this._fileChooser = undefined;
   }
 }
 
