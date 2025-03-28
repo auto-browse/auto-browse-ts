@@ -21,10 +21,10 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
-    "@playwright/test": "^1.0.0"
+    "@playwright/test": "1.52.0-alpha-1743011787000"
   },
   "devDependencies": {
-    "@playwright/test": "^1.42.1",
+    "@playwright/test": "1.52.0-alpha-1743011787000",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

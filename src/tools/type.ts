@@ -1,8 +1,7 @@
 import { tool } from "@langchain/core/tools";
 import { z } from 'zod';
 import { runAndWait } from './utils';
-import { sessionManager } from '../browser';
-import type { Context } from '../browser/context';
+import { context } from '../browser/context';
 
 /**
  * Schema for typing text into elements with descriptions for the AI model
@@ -19,11 +18,6 @@ export const typeTool = tool(
         try
         {
             console.log(`[Type Tool] Starting operation:`, { element, ref, text, submit });
-
-            const context = {
-                existingPage: () => sessionManager.getPage(),
-                refLocator: (ref: string) => sessionManager.getPage().locator(ref)
-            } as Context;
 
             const result = await runAndWait(
                 context,

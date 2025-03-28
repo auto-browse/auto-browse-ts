@@ -5,7 +5,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
-import { clickTool, typeTool, getTextTool, gotoTool } from './tools';
+import { clickTool, typeTool, getTextTool, gotoTool, ariaSnapshotTool } from './tools';
 
 // Load environment variables
 dotenv.config();
@@ -28,12 +28,18 @@ const initializeAgent = () => {
 
     const agent = createReactAgent({
         llm: model,
-        tools: [gotoTool, clickTool, typeTool, getTextTool]
+        tools: [gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool]
     });
 
     // Add the system message for better instruction handling
     const systemMessage = new SystemMessage(
-        `You are a web automation assistant. When given a natural language instructions use the tools to perform.`
+        `You are a web automation assistant. When given a natural language instruction:
+        - For "get" or "get text" instructions, use the getText tool to retrieve content
+        - For "click" instructions, use the click tool to interact with elements
+        - For "type" instructions, use the type tool with the text and target
+        - For navigation, use the goto tool with the provided URL
+        - For understanding page structure and elements, use the aria_snapshot tool
+        Return the operation result or content as requested.`
     );
 
     return {
