@@ -8,7 +8,9 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 import {
     browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
-    browser_hover, browser_drag, browser_select_option, browser_take_screenshot
+    browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
+    browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
+    browser_go_forward
 } from './tools';
 
 // Load environment variables
@@ -52,7 +54,9 @@ const initializeAgent = () => {
         llm: model,
         tools: [
             browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
-            browser_hover, browser_drag, browser_select_option, browser_take_screenshot
+            browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
+            browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
+            browser_go_forward
         ],
         stateModifier: prompt
     });

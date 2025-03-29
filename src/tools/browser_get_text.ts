@@ -1,78 +1,47 @@
 import { tool } from "@langchain/core/tools";
-import { z } from "zod";
-import { sessionManager } from '../browser';
+import { z } from 'zod';
+import { runAndWait } from './utils';
+import { context } from '../browser/context';
 
-// Tool to get text content
+/**
+ * Schema for getting text from elements with descriptions for the AI model
+ */
+const getTextSchema = z.object({
+    element: z.string().describe('Human-readable element description for the target element'),
+    ref: z.string().describe('Element reference from page snapshot to locate the element')
+});
+
 export const browser_get_text = tool(
-    async ({ target }) => {
+    async ({ element, ref }) => {
         try
         {
-            const page = sessionManager.getPage();
+            console.log(`[Get Text Tool] Starting operation:`, { element, ref });
 
-            // Try multiple strategies to find the text
-            // 1. Try heading first
-            const heading = await page.getByRole('heading', { name: new RegExp(target, 'i') });
-            if (await heading.count() > 0)
-            {
-                return await heading.textContent() || '';
-            }
+            const result = await runAndWait(
+                context,
+                `Got text from "${element}"`,
+                async () => {
+                    const locator = context.refLocator(ref);
+                    console.log(`[Get Text Tool] Getting text from element`);
+                    const text = await locator.innerText() || '';
+                    console.log(`[Get Text Tool] Operation successful`);
+                    return text;
+                },
+                false
+            );
 
-            // 2. Try exact text match
-            const exactText = await page.getByText(target, { exact: true });
-            if (await exactText.count() > 0)
-            {
-                return await exactText.textContent() || '';
-            }
-
-            // 3. Try partial text match
-            const partialText = await page.getByText(target, { exact: false });
-            if (await partialText.count() > 0)
-            {
-                return await partialText.textContent() || '';
-            }
-
-            // 4. Try finding by test ID
-            if (target.includes('product-'))
-            {
-                const element = await page.locator(`[data-testid="${target}"]`);
-                if (await element.count() > 0)
-                {
-                    return await element.textContent() || '';
-                }
-            }
-
-            // 5. Fallback to evaluating all elements
-            const text = await page.evaluate((searchTarget: string) => {
-                const elements = document.querySelectorAll('*');
-                const targetLower = searchTarget.toLowerCase();
-
-                for (const el of elements)
-                {
-                    const text = el.textContent || '';
-                    if (text.toLowerCase().includes(targetLower))
-                    {
-                        return text.trim();
-                    }
-                }
-                return null;
-            }, target);
-
-            if (text)
-            {
-                return text;
-            }
-
-            return `No element found containing text "${target}"`;
+            console.log(`[Get Text Tool] Operation completed with result:`, result);
+            return result;
         } catch (error)
         {
-            return `Failed to get text: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            const errorMessage = `Failed to get text: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            console.error(`[Get Text Tool] Error:`, errorMessage);
+            return errorMessage;
         }
     },
     {
         name: "getText",
         description: "Get text content from an element on the page",
-        schema: z.object({
-            target: z.string().describe("The text or identifier to search for"),
-        }),
+        schema: getTextSchema
     }
 );

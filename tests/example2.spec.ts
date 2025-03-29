@@ -4,7 +4,8 @@ import { auto } from '../src';
 
 test('httpbin form test', async ({ page }) => {
     // 1. Navigate to the form
-    await page.goto('https://httpbin.org/forms/post');
+    //await page.goto('https://httpbin.org/forms/post');
+    await auto('go to https://httpbin.org/forms/post', { page });
 
     // 2. Take a snapshot to analyze the page structure
     await auto('take a snapshot', { page });
