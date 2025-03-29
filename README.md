@@ -8,6 +8,24 @@ An AI-powered automation layer for Playwright tests that enables natural languag
 npm install auto-browse
 ```
 
+## Configuration
+
+Auto Browse requires environment variables for the LLM (Language Model) configuration. Create a `.env` file in your project root:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+```
+
+You can find an example configuration in `example.env`.
+
+### Environment Variables
+
+| Variable         | Description                    | Default       |
+| ---------------- | ------------------------------ | ------------- |
+| `OPENAI_API_KEY` | Your OpenAI API key (required) | -             |
+| `LLM_MODEL`      | The LLM model to use           | `gpt-4o-mini` |
+
 ## Usage
 
 ### Basic Example
@@ -46,6 +64,53 @@ test("simplified example", async ({ page }) => {
 	await auto('type "Hello World" in the search box');
 	await auto("click the login button");
 });
+```
+
+### Standalone Mode (Without Playwright Test)
+
+Auto Browse can also be used outside of Playwright test context. Here's a complete form automation example:
+
+```typescript
+import { auto } from "auto-browse";
+
+async function main() {
+	try {
+		// Navigate to the form
+		await auto("go to https://httpbin.org/forms/post");
+
+		// Take a snapshot to analyze the page structure
+		await auto("take a snapshot");
+
+		// Fill out the form
+		await auto('type "John Doe" in the customer name field');
+		await auto('select "Large" for size');
+		await auto('select "Mushroom" for topping');
+		await auto('check "cheese" in extras');
+
+		// Submit the form
+		await auto("click the Order button");
+
+		// Take a snapshot of the response page
+		await auto("take a snapshot of the response page");
+	} catch (error) {
+		console.error("Error:", error);
+	}
+}
+
+// Run the script
+main().catch(console.error);
+```
+
+In standalone mode, Auto Browse automatically:
+
+- Manages browser lifecycle
+- Creates and configures pages
+- Handles cleanup
+
+To run standalone scripts:
+
+```bash
+npx ts-node your-script.ts
 ```
 
 ### Supported Actions
