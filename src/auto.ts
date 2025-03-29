@@ -1,10 +1,9 @@
 import { test as base } from '@playwright/test';
 import { AutoConfig } from './types';
-import { sessionManager } from './browser';
+import { sessionManager, context } from './browser';
 import { ChatOpenAI } from "@langchain/openai";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { HumanMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 import {
     browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
@@ -16,10 +15,6 @@ import {
 // Load environment variables
 dotenv.config();
 const openai_llm_model = process.env.LLM_MODEL || 'gpt-4o-mini';
-
-const gemini_model = new ChatGoogleGenerativeAI({
-    model: "gemini-2.0-flash-001"
-});
 
 const openai_model = new ChatOpenAI({
     modelName: openai_llm_model,
@@ -69,32 +64,7 @@ const initializeAgent = () => {
         stateModifier: prompt
     });
 
-    // Add the system message for better instruction handling
-    const systemMessage = new SystemMessage(
-        `You are a web automation assistant. When given a natural language instruction:
-        - Always call the snapshot tool first to analyze the page structure and elements, so you can understand the context ad the elements available on the page to perform the requested action
-        - For "get" or "get text" instructions, use the getText tool to retrieve content
-        - For "click" instructions, use the click tool to interact with elements
-        - For "type" instructions, use the type tool with the text and target
-        - For navigation, use the goto tool with the provided URL
-        - For understanding page structure and elements, use the aria_snapshot tool
-        - For hover interactions, use the hover tool over elements
-        - For drag and drop operations, use the drag tool between elements
-        - For selecting options in dropdowns, use the selectOption tool
-        - For taking screenshots, use the takeScreenshot tool
-        - For going back in history, use the goBack tool
-        - For waiting for elements, use the wait tool
-        - For pressing keys, use the pressKey tool
-        - For saving PDFs, use the savePDF tool
-        - For choosing files, use the chooseFile tool
-        - For verification and assertions, use the assert tool
-        Return the operation result or content as requested.`
-    );
-
-    return {
-        agent,
-        systemMessage
-    };
+    return { agent };
 };
 
 
@@ -107,17 +77,22 @@ export async function auto(instruction: string, config?: AutoConfig): Promise<an
     {
         sessionManager.setPage(config.page);
         console.log(`[Auto] Page set from config`);
-    }
-
-    const page = sessionManager.getPage();
-    if (!page)
+    } else
     {
-        throw new Error('No page available. Make sure to set a page before using auto.');
+        try
+        {
+            sessionManager.getPage();
+        } catch
+        {
+            // In standalone mode, create a new page
+            console.log(`[Auto] No existing page, creating new page`);
+            await context.createPage();
+        }
     }
 
     // Create and invoke the agent
     console.log(`[Auto] Creating agent for instruction`);
-    const { agent, systemMessage } = initializeAgent();
+    const { agent } = initializeAgent();
     const result = await agent.invoke({
         messages: [new HumanMessage(instruction)]
     });

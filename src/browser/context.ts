@@ -1,11 +1,12 @@
-import { FileChooser, Frame, FrameLocator, Locator, Page } from '@playwright/test';
+import { FileChooser, Frame, FrameLocator, Locator, Page, Browser, chromium } from '@playwright/test';
 import { sessionManager } from './session-manager';
 
 export class Context {
   private static instance: Context;
   private _lastSnapshotFrames: FrameLocator[] = [];
   private _fileChooser: FileChooser | undefined;
-
+  private _browser: Browser | undefined;
+  private _page: Page | undefined;
   private _listenerInitialized: boolean = false;
 
   private constructor() { }
@@ -66,11 +67,59 @@ export class Context {
     return frame.locator(`aria-ref=${ref}`);
   }
 
+  async createPage(): Promise<Page> {
+    if (this._page)
+    {
+      return this._page;
+    }
+
+    const { browser, page } = await this._createPage();
+    this._browser = browser;
+    this._page = page;
+    sessionManager.setPage(page);
+
+    // Initialize listeners
+    page.on('filechooser', chooser => this._fileChooser = chooser);
+    page.on('close', () => this._onPageClose());
+    this._listenerInitialized = true;
+
+    return page;
+  }
+
+  private async _createPage(): Promise<{ browser?: Browser, page: Page; }> {
+    const browser = await chromium.launch({
+      channel: 'chrome',
+      headless: false
+    });
+    const context = await browser.newContext({
+    });
+    const page = await context.newPage();
+    return { browser, page };
+  }
+
+  private _onPageClose() {
+    const browser = this._browser;
+    const page = this._page;
+    void page?.context()?.close().then(() => browser?.close()).catch(() => { });
+
+    this._browser = undefined;
+    this._page = undefined;
+    this._fileChooser = undefined;
+    this._lastSnapshotFrames = [];
+    this._listenerInitialized = false;
+  }
+
   existingPage(): Page {
-    return sessionManager.getPage();
+    // Try standalone page first, fall back to session manager
+    return this._page || sessionManager.getPage();
   }
 
   async close() {
+    if (this._page)
+    {
+      await this._page.close();
+      return;
+    }
     const page = sessionManager.getPage();
     await page.close();
   }

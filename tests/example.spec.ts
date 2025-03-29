@@ -1,4 +1,3 @@
-import { expect } from '@playwright/test';
 import { test } from '../src';
 import { auto } from '../src';
 
@@ -12,7 +11,7 @@ test('basic example', async ({ page }) => {
     `);
 
     // Get text using natural language
-    const headerText = await auto('get header text');
+    await auto('get header text');
     await auto('verify header text is "Welcome to Auto Browse"');
     //expect(headerText).toBe('Welcome to Auto Browse');
 
