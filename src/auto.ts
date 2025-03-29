@@ -2,13 +2,27 @@ import { test as base } from '@playwright/test';
 import { AutoConfig } from './types';
 import { sessionManager } from './browser';
 import { ChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
-import { clickTool, typeTool, getTextTool, gotoTool, ariaSnapshotTool } from './tools';
+import {
+    clickTool, typeTool, getTextTool, gotoTool, ariaSnapshotTool,
+    hoverTool, dragTool, selectOptionTool, screenshotTool
+} from './tools';
 
 // Load environment variables
 dotenv.config();
+const openai_llm_model = process.env.LLM_MODEL || 'gpt-4o-mini';
+
+const gemini_model = new ChatGoogleGenerativeAI({
+    model: "gemini-2.0-flash-001"
+});
+
+const openai_model = new ChatOpenAI({
+    modelName: openai_llm_model,
+    temperature: 0,
+});
 
 // Extend base test to automatically track page
 export const test = base.extend({
@@ -20,11 +34,7 @@ export const test = base.extend({
 
 // Initialize the LangChain agent with more detailed instructions
 const initializeAgent = () => {
-    const model = new ChatOpenAI({
-        modelName: "gpt-4",
-        temperature: 0,
-        maxTokens: 1000
-    });
+    const model = openai_model;
 
     const prompt =
         `You are a web automation assistant. When given a natural language instruction:
@@ -33,11 +43,18 @@ const initializeAgent = () => {
         - For "type" instructions, use the type tool with the text and target
         - For navigation, use the goto tool with the provided URL
         - For understanding page structure and elements, use the aria_snapshot tool
+        - For hover interactions, use the hover tool over elements
+        - For drag and drop operations, use the drag tool between elements
+        - For selecting options in dropdowns, use the selectOption tool
         Return the operation result or content as requested.`;
 
     const agent = createReactAgent({
         llm: model,
-        tools: [gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool], stateModifier: prompt
+        tools: [
+            gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool,
+            hoverTool, dragTool, selectOptionTool, screenshotTool
+        ],
+        stateModifier: prompt
     });
 
     // Add the system message for better instruction handling
@@ -48,6 +65,9 @@ const initializeAgent = () => {
         - For "type" instructions, use the type tool with the text and target
         - For navigation, use the goto tool with the provided URL
         - For understanding page structure and elements, use the aria_snapshot tool
+        - For hover interactions, use the hover tool over elements
+        - For drag and drop operations, use the drag tool between elements
+        - For selecting options in dropdowns, use the selectOption tool
         Return the operation result or content as requested.`
     );
 

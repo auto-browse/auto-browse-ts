@@ -1,31 +1,46 @@
 import { tool } from "@langchain/core/tools";
-import { z } from "zod";
-import { sessionManager } from '../browser';
+import { z } from 'zod';
+import { runAndWait } from './utils';
+import { context } from '../browser/context';
 
-// Tool to click elements
+/**
+ * Schema for clicking elements with descriptions for the AI model
+ */
+const clickSchema = z.object({
+    element: z.string().describe('Human-readable element description for the target element'),
+    ref: z.string().describe('Element reference from page snapshot to locate the element')
+});
+
 export const clickTool = tool(
-    async ({ target }) => {
+    async ({ element, ref }) => {
         try
         {
-            const page = sessionManager.getPage();
-            const element = await page.getByRole('button', { name: target })
-                .or(page.getByRole('link', { name: target }))
-                .or(page.getByText(target, { exact: false }))
-                .or(page.getByLabel(target, { exact: false }))
-                .or(page.getByTestId(target));
+            console.log(`[Click Tool] Starting operation:`, { element, ref });
 
-            await element.click();
-            return "Successfully clicked the element";
+            const result = await runAndWait(
+                context,
+                `Clicked "${element}"`,
+                async () => {
+                    const locator = context.refLocator(ref);
+                    console.log(`[Click Tool] Clicking element`);
+                    await locator.click();
+                    console.log(`[Click Tool] Operation successful`);
+                },
+                true
+            );
+
+            console.log(`[Click Tool] Operation completed with result:`, result);
+            return result;
         } catch (error)
         {
-            return `Failed to click: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            const errorMessage = `Failed to click: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            console.error(`[Click Tool] Error:`, errorMessage);
+            return errorMessage;
         }
     },
     {
         name: "click",
-        description: "Click an element on the page by its text, role, label, or test ID",
-        schema: z.object({
-            target: z.string().describe("The text or identifier of the element to click"),
-        }),
+        description: "Click an element on the page",
+        schema: clickSchema
     }
 );

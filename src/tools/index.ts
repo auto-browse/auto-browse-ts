@@ -3,3 +3,7 @@ export { typeTool } from './type';
 export { getTextTool } from './getText';
 export { gotoTool } from './goto';
 export { ariaSnapshotTool } from './ariaSnapshot';
+export { hoverTool } from './hover';
+export { dragTool } from './drag';
+export { selectOptionTool } from './selectOption';
+export { screenshotTool } from './screenshot';
