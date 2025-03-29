@@ -40,6 +40,7 @@ const initializeAgent = () => {
 
     const prompt =
         `You are a web automation assistant. When given a natural language instruction:
+        - Always call the snapshot tool first to analyze the page structure and elements, so you can understand the context ad the elements available on the page to perform the requested action
         - For "get" or "get text" instructions, use the getText tool to retrieve content
         - For "click" instructions, use the click tool to interact with elements
         - For "type" instructions, use the type tool with the text and target
@@ -71,6 +72,7 @@ const initializeAgent = () => {
     // Add the system message for better instruction handling
     const systemMessage = new SystemMessage(
         `You are a web automation assistant. When given a natural language instruction:
+        - Always call the snapshot tool first to analyze the page structure and elements, so you can understand the context ad the elements available on the page to perform the requested action
         - For "get" or "get text" instructions, use the getText tool to retrieve content
         - For "click" instructions, use the click tool to interact with elements
         - For "type" instructions, use the type tool with the text and target
