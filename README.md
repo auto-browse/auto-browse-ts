@@ -1,6 +1,11 @@
-# Auto Browse
+# Auto-Browse: AI Enabled Browser Automation
 
-An AI-powered automation layer for Playwright tests that enables natural language interactions with web pages.
+**Auto Browse** is the easiest way to connect your AI agents with the browser using natural language.
+
+
+## Quick start
+
+An AI-powered browser automation enginer for automating browser tasks and Playwright tests that enables natural language interactions with web pages.
 
 ## Installation
 
@@ -26,45 +31,20 @@ You can find an example configuration in `example.env`.
 | `OPENAI_API_KEY` | Your OpenAI API key (required) | -             |
 | `LLM_MODEL`      | The LLM model to use           | `gpt-4o-mini` |
 
+## Supported LLM Providers
+
+Currently supported:
+
+- OpenAI (gpt-4o-mini and compatible models)
+
+Coming soon:
+
+- Anthropic Claude
+- Google Gemini
+- Local LLMs
+- Meta Llama
+
 ## Usage
-
-### Basic Example
-
-```typescript
-import { test, expect } from "@playwright/test";
-import { auto } from "auto-browse";
-
-test("example test", async ({ page }) => {
-	await page.goto("https://example.com");
-
-	// Get text using natural language
-	const headerText = await auto("get the header text", { page });
-
-	// Type in an input using natural language
-	await auto('type "Hello World" in the search box', { page });
-
-	// Click elements using natural language
-	await auto("click the login button", { page });
-});
-```
-
-### Auto-Detection Mode
-
-The package automatically detects the current page context, so you can skip passing the page parameter:
-
-```typescript
-import { test, expect } from "@playwright/test";
-import { auto } from "auto-browse";
-
-test("simplified example", async ({ page }) => {
-	await page.goto("https://example.com");
-
-	// No need to pass page parameter
-	const headerText = await auto("get the header text");
-	await auto('type "Hello World" in the search box');
-	await auto("click the login button");
-});
-```
 
 ### Standalone Mode (Without Playwright Test)
 
@@ -113,6 +93,44 @@ To run standalone scripts:
 npx ts-node your-script.ts
 ```
 
+### Playwright Test Mode
+
+```typescript
+import { test, expect } from "@playwright/test";
+import { auto } from "auto-browse";
+
+test("example test", async ({ page }) => {
+	await page.goto("https://example.com");
+
+	// Get text using natural language
+	const headerText = await auto("get the header text", { page });
+
+	// Type in an input using natural language
+	await auto('type "Hello World" in the search box', { page });
+
+	// Click elements using natural language
+	await auto("click the login button", { page });
+});
+```
+
+### Auto-Detection Mode
+
+The package automatically detects the current page context, so you can skip passing the page parameter:
+
+```typescript
+import { test, expect } from "@playwright/test";
+import { auto } from "auto-browse";
+
+test("simplified example", async ({ page }) => {
+	await page.goto("https://example.com");
+
+	// No need to pass page parameter
+	const headerText = await auto("get the header text");
+	await auto('type "Hello World" in the search box');
+	await auto("click the login button");
+});
+```
+
 ### Supported Actions
 
 1. **Clicking Elements**
@@ -129,30 +147,27 @@ npx ts-node your-script.ts
    await auto('enter "password123" in the password input');
    ```
 
-3. **Getting Text**
-   ```typescript
-   const text = await auto("get the header text");
-   const error = await auto("get the error message");
-   ```
-
-### Selector Strategies
-
-Auto Browse uses multiple strategies to find elements:
-
-1. Role-based (recommended)
-2. Text content
-3. Labels
-4. Placeholders
-5. Test IDs
-
 ## Features
 
-- Natural language commands
+Core Features:
+
+- Natural language commands for browser automation
+- AI-powered computer and browser agent
+- Automate any browser task
 - Automatic page/context detection
-- Multiple selector strategies
 - TypeScript support
 - Playwright test integration
 - Zero configuration required
+
+Supported Operations:
+
+- Page Navigation (goto URL, back, forward)
+- Element Interactions (click, type, hover, drag-and-drop)
+- Form Handling (select options, file uploads, form submission)
+- Visual Verification (snapshots, screenshots, PDF export)
+- Keyboard Control (key press, text input)
+- Wait and Timing Control
+- Assertions and Validation
 
 ## Best Practices
 
