@@ -10,7 +10,7 @@ import {
     browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
     browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
     browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
-    browser_go_forward
+    browser_go_forward, browser_assert
 } from './tools';
 
 // Load environment variables
@@ -48,6 +48,13 @@ const initializeAgent = () => {
         - For hover interactions, use the hover tool over elements
         - For drag and drop operations, use the drag tool between elements
         - For selecting options in dropdowns, use the selectOption tool
+        - For taking screenshots, use the takeScreenshot tool
+        - For going back in history, use the goBack tool
+        - For waiting for elements, use the wait tool
+        - For pressing keys, use the pressKey tool
+        - For saving PDFs, use the savePDF tool
+        - For choosing files, use the chooseFile tool
+        - For verification and assertions, use the assert tool
         Return the operation result or content as requested.`;
 
     const agent = createReactAgent({
@@ -55,7 +62,7 @@ const initializeAgent = () => {
         tools: [
             browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
             browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
-            browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
+            browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file, browser_assert,
             browser_go_forward
         ],
         stateModifier: prompt
@@ -72,6 +79,13 @@ const initializeAgent = () => {
         - For hover interactions, use the hover tool over elements
         - For drag and drop operations, use the drag tool between elements
         - For selecting options in dropdowns, use the selectOption tool
+        - For taking screenshots, use the takeScreenshot tool
+        - For going back in history, use the goBack tool
+        - For waiting for elements, use the wait tool
+        - For pressing keys, use the pressKey tool
+        - For saving PDFs, use the savePDF tool
+        - For choosing files, use the chooseFile tool
+        - For verification and assertions, use the assert tool
         Return the operation result or content as requested.`
     );
 

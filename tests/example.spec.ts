@@ -12,15 +12,18 @@ test('basic example', async ({ page }) => {
     `);
 
     // Get text using natural language
-    const headerText = await auto('get Welcome to Auto Browse');
-    expect(headerText).toBe('Welcome to Auto Browse');
+    const headerText = await auto('get header text');
+    await auto('verify header text is "Welcome to Auto Browse"');
+    //expect(headerText).toBe('Welcome to Auto Browse');
 
     // Type in search box using natural language
     await auto('type "hello world" in Search');
 
     // Verify input value
-    const inputValue = await page.getByLabel('Search box').inputValue();
-    expect(inputValue).toBe('hello world');
+    //const inputValue = await page.getByLabel('Search box').inputValue();
+    await auto('get input value from Search box');
+    await auto('verify input value is "hello world"');
+    //expect(inputValue).toBe('hello world');
 
     // Click button using natural language
     await auto('click Click me');
@@ -69,6 +72,8 @@ test('complex selectors', async ({ page }) => {
     await auto('click Add to cart');
 
     // Get text from specific section
-    const productTitle = await auto('get text from Product 1');
-    expect(productTitle).toBe('Product 1');
+    await auto('get text from Product 1');
+    //const productTitle = await auto('get text from Product 1');
+    await auto('verify product title is "Product 1"');
+    //expect(productTitle).toBe('Product 1');
 });
