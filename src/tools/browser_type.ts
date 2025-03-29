@@ -13,7 +13,7 @@ const typeSchema = z.object({
     submit: z.boolean().optional().describe('Whether to submit by pressing Enter after typing').default(false)
 });
 
-export const typeTool = tool(
+export const browser_type = tool(
     async ({ element, ref, text, submit }) => {
         try
         {

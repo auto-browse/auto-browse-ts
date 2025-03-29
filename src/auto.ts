@@ -7,8 +7,8 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 import {
-    clickTool, typeTool, getTextTool, gotoTool, ariaSnapshotTool,
-    hoverTool, dragTool, selectOptionTool, screenshotTool
+    browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
+    browser_hover, browser_drag, browser_select_option, browser_take_screenshot
 } from './tools';
 
 // Load environment variables
@@ -51,8 +51,8 @@ const initializeAgent = () => {
     const agent = createReactAgent({
         llm: model,
         tools: [
-            gotoTool, clickTool, typeTool, getTextTool, ariaSnapshotTool,
-            hoverTool, dragTool, selectOptionTool, screenshotTool
+            browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
+            browser_hover, browser_drag, browser_select_option, browser_take_screenshot
         ],
         stateModifier: prompt
     });

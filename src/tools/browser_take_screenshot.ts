@@ -10,7 +10,7 @@ const screenshotSchema = z.object({
     raw: z.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.')
 });
 
-export const screenshotTool = tool(
+export const browser_take_screenshot = tool(
     async ({ raw }) => {
         try
         {

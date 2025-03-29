@@ -11,7 +11,7 @@ const hoverSchema = z.object({
     ref: z.string().describe('Element reference from page snapshot to locate the element')
 });
 
-export const hoverTool = tool(
+export const browser_hover = tool(
     async ({ element, ref }) => {
         try
         {

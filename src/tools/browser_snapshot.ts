@@ -5,7 +5,7 @@ import { captureAriaSnapshot } from './utils';
 
 const snapshotSchema = z.object({});
 
-export const ariaSnapshotTool = tool(
+export const browser_snapshot = tool(
     async () => {
         try
         {

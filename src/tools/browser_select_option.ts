@@ -12,7 +12,7 @@ const selectOptionSchema = z.object({
     values: z.array(z.string()).describe('Array of values to select in the dropdown. Can be a single value or multiple values.')
 });
 
-export const selectOptionTool = tool(
+export const browser_select_option = tool(
     async ({ element, ref, values }) => {
         try
         {

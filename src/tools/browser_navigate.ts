@@ -3,7 +3,7 @@ import { z } from "zod";
 import { sessionManager } from '../browser';
 
 // Tool to navigate to URLs
-export const gotoTool = tool(
+export const browser_navigate = tool(
     async ({ url }) => {
         try
         {

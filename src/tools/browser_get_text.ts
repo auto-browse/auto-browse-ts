@@ -3,7 +3,7 @@ import { z } from "zod";
 import { sessionManager } from '../browser';
 
 // Tool to get text content
-export const getTextTool = tool(
+export const browser_get_text = tool(
     async ({ target }) => {
         try
         {

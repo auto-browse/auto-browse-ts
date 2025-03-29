@@ -13,7 +13,7 @@ const dragSchema = z.object({
     endRef: z.string().describe('Target element reference from page snapshot to locate the drop target')
 });
 
-export const dragTool = tool(
+export const browser_drag = tool(
     async ({ startElement, startRef, endElement, endRef }) => {
         try
         {
