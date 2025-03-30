@@ -2,16 +2,51 @@
 
 **Auto Browse** is the easiest way to connect your AI agents with the browser using natural language.
 
-
 ## Quick start
 
-An AI-powered browser automation enginer for automating browser tasks and Playwright tests that enables natural language interactions with web pages.
+An AI-powered browser automation agent for automating browser tasks and Write Playwright tests that enables natural language interactions with web pages.
 
 ## Installation
 
 ```bash
-npm install auto-browse
+npm install @auto-browse/auto-browse
 ```
+
+## ⚠️ Important: Playwright Version Requirements
+
+> **Note:** Auto Browse currently requires specific versions of Playwright. This requirement will be relaxed in future versions.
+
+### Required Versions
+
+```bash
+"@playwright/test": "1.52.0-alpha-1743011787000"
+"playwright": "1.52.0-alpha-1743011787000"
+```
+
+### Version Conflicts
+
+If you're using Auto Browse alongside an existing Playwright setup, you must upgrade to these specific versions. Here's how to handle common issues:
+
+1. **Installation Conflicts**
+
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+   This flag helps resolve peer dependency conflicts during installation.
+
+2. **Multiple Playwright Versions**
+
+   - Remove existing Playwright installations
+   - Clear npm cache if needed: `npm cache clean --force`
+   - Reinstall with the required versions
+
+3. **Project Compatibility**
+   - Update your project's Playwright configuration
+   - Ensure your existing tests are compatible with the alpha version
+   - Consider using a separate test environment if needed
+
+> 🔄 Future releases will support a wider range of Playwright versions. Subscribe to our GitHub repository for updates.
 
 ## Configuration
 
@@ -51,7 +86,7 @@ Coming soon:
 Auto Browse can also be used outside of Playwright test context. Here's a complete form automation example:
 
 ```typescript
-import { auto } from "auto-browse";
+import { auto } from "@auto-browse/auto-browse";
 
 async function main() {
 	try {
@@ -97,7 +132,7 @@ npx ts-node your-script.ts
 
 ```typescript
 import { test, expect } from "@playwright/test";
-import { auto } from "auto-browse";
+import { auto } from "@auto-browse/auto-browse";
 
 test("example test", async ({ page }) => {
 	await page.goto("https://example.com");
@@ -119,7 +154,7 @@ The package automatically detects the current page context, so you can skip pass
 
 ```typescript
 import { test, expect } from "@playwright/test";
-import { auto } from "auto-browse";
+import { auto } from "@auto-browse/auto-browse";
 
 test("simplified example", async ({ page }) => {
 	await page.goto("https://example.com");
@@ -130,6 +165,73 @@ test("simplified example", async ({ page }) => {
 	await auto("click the login button");
 });
 ```
+
+### BDD Mode with Playwright-BDD
+
+Auto Browse seamlessly integrates with [playwright-bdd](https://github.com/vitalets/playwright-bdd) for behavior-driven development. This allows you to write expressive feature files and implement steps using natural language commands.
+
+#### Example Feature File
+
+```gherkin
+# features/homepage.feature
+Feature: Playwright Home Page
+
+  Scenario: Check title
+    Given navigate to https://playwright.dev
+    When click link "Get started"
+    Then assert title "Installation"
+```
+
+#### Step Definitions
+
+```typescript
+import { auto } from "@auto-browse/auto-browse";
+import { Given, When, Then } from "./fixtures";
+
+// Generic step that handles any natural language action
+When(/^(.*)$/, async ({ page }, action: string) => {
+	await auto(action, { page });
+});
+
+// You can also create specific steps for better readability
+Given("navigate to {string}", async ({ page }, url: string) => {
+	await auto(`navigate to ${url}`, { page });
+});
+
+Then("assert title {string}", async ({ page }, title: string) => {
+	await auto(`assert title is "${title}"`, { page });
+});
+```
+
+#### Setup Requirements
+
+1. Install dependencies:
+
+```bash
+npm install --save-dev @playwright/test @cucumber/cucumber playwright-bdd
+```
+
+2. Configure `playwright.config.ts`:
+
+```typescript
+import { PlaywrightTestConfig } from "@playwright/test";
+
+const config: PlaywrightTestConfig = {
+	testDir: "./features",
+	use: {
+		baseURL: "https://playwright.dev"
+	}
+};
+
+export default config;
+```
+
+This integration enables:
+
+- Natural language test scenarios
+- Reusable step definitions
+- Cucumber reporter integration
+- Built-in Playwright context management
 
 ### Supported Actions
 

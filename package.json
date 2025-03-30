@@ -1,5 +1,5 @@
 {
-  "name": "auto-browse",
+  "name": "@auto-browse/auto-browse",
   "version": "0.1.0",
   "description": "AI-powered browser automation",
   "author": "auto-browse",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/auto-browse/auto-browse-ts/issues"
   },
-  "documentation": "https://github.com/auto-browse/auto-browse-ts/blob/main/README.md",
+  "documentation": "https://typescript.docs.auto-browse.com/introduction",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
