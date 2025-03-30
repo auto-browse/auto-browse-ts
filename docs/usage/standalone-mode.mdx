@@ -1,0 +1,184 @@
+---
+title: "Standalone Mode"
+description: "Learn how to use Auto-Browse outside of Playwright test context"
+---
+
+# Standalone Mode
+
+Auto-Browse can be used independently of Playwright's test framework, making it perfect for automation scripts, web scraping, or any browser-based tasks.
+
+## Overview
+
+In standalone mode, Auto-Browse:
+
+- Manages the browser lifecycle automatically
+- Creates and configures pages
+- Handles cleanup
+- Provides a simple, natural language interface
+
+## Basic Usage
+
+Here's a simple example of using Auto-Browse in standalone mode:
+
+```typescript
+import { auto } from "auto-browse";
+
+async function main() {
+	try {
+		// Navigate to a website
+		await auto("go to https://example.com");
+
+		// Take a snapshot to analyze the page
+		await auto("take a snapshot");
+
+		// Perform actions using natural language
+		const heading = await auto("get the main heading text");
+		console.log("Main heading:", heading);
+	} catch (error) {
+		console.error("Error:", error);
+	}
+}
+
+main().catch(console.error);
+```
+
+## Form Automation Example
+
+A more complex example showing form automation:
+
+```typescript
+import { auto } from "auto-browse";
+
+async function automateForm() {
+	try {
+		// Navigate to the form
+		await auto("go to https://httpbin.org/forms/post");
+
+		// Take a snapshot to analyze the page structure
+		await auto("take a snapshot");
+
+		// Fill out form fields
+		await auto('type "John Doe" in the customer name field');
+		await auto('select "Large" for size');
+		await auto('select "Mushroom" for topping');
+		await auto('check "cheese" in extras');
+
+		// Submit and verify
+		await auto("click the Order button");
+		await auto("take a snapshot of the response page");
+
+		// Extract confirmation details
+		const confirmation = await auto("get the order confirmation text");
+		console.log("Order confirmed:", confirmation);
+	} catch (error) {
+		console.error("Error:", error);
+	}
+}
+
+automateForm().catch(console.error);
+```
+
+## Running Scripts
+
+To run standalone scripts:
+
+```bash
+# Using ts-node
+npx ts-node your-script.ts
+
+# Or using nodemon for development
+npx nodemon your-script.ts
+```
+
+## Best Practices
+
+1. **Error Handling**
+
+```typescript
+try {
+	await auto("perform action");
+} catch (error) {
+	// Handle specific error types
+	if (error.message.includes("element not found")) {
+		// Handle element not found
+	} else if (error.message.includes("timeout")) {
+		// Handle timeout
+	}
+	throw error;
+}
+```
+
+2. **Taking Snapshots**
+
+```typescript
+// Take snapshots to help Auto-Browse understand the page
+await auto("take a snapshot");
+
+// Take named snapshots for reference
+await auto('take a snapshot named "before-login"');
+await auto('take a snapshot named "after-login"');
+```
+
+3. **Descriptive Commands**
+
+```typescript
+// Good - clear and specific
+await auto('type "user@example.com" in the email field');
+
+// Less clear
+await auto('type "user@example.com" in input');
+```
+
+## Common Use Cases
+
+1. **Web Scraping**
+
+```typescript
+async function scrapeData() {
+	await auto("go to https://example.com/products");
+	await auto("take a snapshot");
+
+	// Get all product titles
+	const titles = await auto("get text of all product title elements");
+
+	// Get specific product details
+	const price = await auto('get the price for product "Example Item"');
+}
+```
+
+2. **Site Testing**
+
+```typescript
+async function testSite() {
+	await auto("go to https://example.com");
+
+	// Check navigation
+	await auto("verify the main navigation menu is visible");
+	await auto("click the About link");
+	await auto("verify the URL contains /about");
+
+	// Test responsiveness
+	await auto("set viewport to mobile size");
+	await auto("verify the mobile menu button is visible");
+}
+```
+
+3. **Data Entry Automation**
+
+```typescript
+async function enterData(records) {
+	for (const record of records) {
+		await auto("click the Add New button");
+		await auto(`type "${record.name}" in the name field`);
+		await auto(`type "${record.email}" in the email field`);
+		await auto("click Save");
+		await auto("verify success message is shown");
+	}
+}
+```
+
+## Next Steps
+
+- Learn about [Playwright Test Mode](/usage/playwright-test-mode)
+- Explore [Auto-Detection Mode](/usage/auto-detection-mode)
+- Check out [Supported Actions](/actions/clicking)

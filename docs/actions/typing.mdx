@@ -1,0 +1,234 @@
+---
+title: "Typing Actions"
+description: "Learn how to input text and interact with form fields using Auto-Browse"
+---
+
+# Typing Actions
+
+Auto-Browse provides natural language commands for typing text and interacting with input fields. This guide covers various typing scenarios and best practices.
+
+## Basic Typing
+
+Input text using natural language commands:
+
+```typescript
+// Type in a simple input field
+await auto('type "Hello World" in the search box');
+
+// Type in a labeled field
+await auto('type "john@example.com" in the email field');
+
+// Type in a form input
+await auto('type "John Doe" in the name input');
+```
+
+## Input Field Types
+
+Auto-Browse supports various input field types:
+
+### Text Fields
+
+```typescript
+// Simple text input
+await auto('type "My Title" in the title field');
+
+// Multi-line text
+await auto('type "This is a longer description" in the description textarea');
+
+// Placeholder-based targeting
+await auto('type "Search products" in the field with placeholder "Search..."');
+```
+
+### Email Fields
+
+```typescript
+// Email input with validation
+await auto('type "user@example.com" in the email field');
+
+// Multiple email fields
+await auto('type "primary@example.com" in the primary email field');
+await auto('type "secondary@example.com" in the backup email field');
+```
+
+### Password Fields
+
+```typescript
+// Standard password input
+await auto('type "mypassword123" in the password field');
+
+// Password confirmation
+await auto('type "mypassword123" in the confirm password field');
+
+// Current password for changes
+await auto('type "oldpassword" in the current password field');
+```
+
+## Advanced Typing
+
+### Contextual Typing
+
+Specify input context for precise targeting:
+
+```typescript
+// Type within a specific section
+await auto('type "Admin" in the username field in the login form');
+await auto('type "Details" in the description field in the profile section');
+
+// Type with multiple context hints
+await auto('type "Draft" in the status field of the first document');
+await auto('type "Urgent" in the priority field of the latest ticket');
+```
+
+### Special Characters
+
+Handle various text input scenarios:
+
+```typescript
+// Special characters
+await auto('type "@#$%" in the special characters field');
+
+// Multi-line input
+await auto('type "Line 1\nLine 2" in the message box');
+
+// Unicode characters
+await auto('type "こんにちは" in the greeting field');
+```
+
+### Input with Validation
+
+Handle input validation scenarios:
+
+```typescript
+// Number inputs
+await auto('type "42" in the age field');
+await auto('type "1234.56" in the price field');
+
+// Phone numbers
+await auto('type "+1 (555) 123-4567" in the phone field');
+
+// Formatted dates
+await auto('type "2024-03-30" in the date field');
+```
+
+## Best Practices
+
+### 1. Be Specific
+
+```typescript
+// Good - Clear and specific
+await auto('type "John Doe" in the full name field');
+
+// Less Clear - Ambiguous
+await auto('type "John Doe" in the input');
+```
+
+### 2. Use Field Context
+
+```typescript
+// Good - Provides context
+await auto('type "123 Main St" in the shipping address field');
+
+// Less Reliable - No context
+await auto('type "123 Main St" in address');
+```
+
+### 3. Handle Clear and Replace
+
+```typescript
+// Clear field first
+await auto("clear the email field");
+await auto('type "new@example.com" in the email field');
+
+// Or use replace command
+await auto('replace text in email field with "new@example.com"');
+```
+
+## Common Patterns
+
+### 1. Form Filling
+
+```typescript
+async function fillForm() {
+	await auto('type "John" in the first name field');
+	await auto('type "Doe" in the last name field');
+	await auto('type "john.doe@example.com" in the email field');
+	await auto('type "123 Main St" in the street address field');
+	await auto('type "Apt 4B" in the apartment field');
+}
+```
+
+### 2. Search Interactions
+
+```typescript
+async function searchExample() {
+	await auto('type "product name" in the search box');
+	await auto("press Enter");
+	await auto("wait for search results");
+	await auto('type "category:electronics" in the filter field');
+}
+```
+
+### 3. Complex Input
+
+```typescript
+async function complexInput() {
+	// Rich text input
+	await auto('type "**Bold Text**" in the markdown editor');
+
+	// Code input
+	await auto("type \"console.log('test')\" in the code editor");
+
+	// Formatted input
+	await auto('type "(555) 123-4567" in the phone field');
+}
+```
+
+## Error Handling
+
+Handle common typing scenarios:
+
+```typescript
+try {
+	await auto('type "test" in the input field');
+} catch (error) {
+	if (error.message.includes("field not editable")) {
+		// Try clicking the field first
+		await auto("click the input field");
+		await auto('type "test" in the input field');
+	}
+}
+```
+
+## Troubleshooting
+
+Common typing issues and solutions:
+
+1. **Field Not Focusable**
+
+```typescript
+// Click field first
+await auto("click the input field");
+await auto('type "text" in the input field');
+```
+
+2. **Input Not Accepted**
+
+```typescript
+// Clear field first
+await auto("clear the input field");
+await auto('type "new text" in the input field');
+```
+
+3. **Dynamic Fields**
+
+```typescript
+// Wait for field to be ready
+await auto("wait for the input field to be enabled");
+await auto('type "text" in the input field');
+```
+
+## Next Steps
+
+- Learn about [Form Actions](/actions/forms)
+- Explore [Navigation](/actions/navigation)
+- Check out [Verification](/actions/verification)

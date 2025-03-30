@@ -1,0 +1,146 @@
+---
+title: "Environment Setup"
+description: "Configure Auto-Browse with different LLM providers and environment settings"
+---
+
+# Environment Setup
+
+Auto-Browse supports various Language Model (LLM) providers to power its AI capabilities. This guide covers the setup for each supported provider.
+
+## OpenAI Configuration
+
+OpenAI is the default and currently supported LLM provider.
+
+### Setup Steps
+
+1. Get your OpenAI API key:
+
+   - Go to [OpenAI's platform](https://platform.openai.com)
+   - Create an account or sign in
+   - Navigate to API keys
+   - Create a new API key
+
+2. Configure your environment:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+```
+
+### Model Options
+
+OpenAI models supported:
+
+- `gpt-4o-mini` (default)
+- Compatible GPT models
+
+## Upcoming Provider Support
+
+The following LLM providers will be supported in future releases:
+
+### Anthropic Claude
+
+```env
+ANTHROPIC_API_KEY=your_anthropic_key_here
+LLM_PROVIDER=anthropic
+LLM_MODEL=claude-3  # Example model
+```
+
+### Google Gemini
+
+```env
+GOOGLE_API_KEY=your_google_key_here
+LLM_PROVIDER=gemini
+LLM_MODEL=gemini-pro  # Example model
+```
+
+### Local LLMs
+
+Support for running models locally using providers like:
+
+- Ollama
+- LMStudio
+- LocalAI
+
+Configuration will be available in future releases.
+
+### Meta Llama
+
+Integration with Meta's Llama models will be supported through various hosting options.
+
+## Advanced Configuration
+
+### Timeout Settings
+
+Configure timeouts for AI operations:
+
+```env
+AUTO_BROWSE_TIMEOUT=60000  # Default 60s
+AUTO_BROWSE_OPERATION_TIMEOUT=10000  # Default 10s
+```
+
+### Debug Mode
+
+Enable detailed logging for troubleshooting:
+
+```env
+AUTO_BROWSE_DEBUG=true  # Enables debug logging
+```
+
+### Custom Endpoints
+
+For enterprise setups or custom model deployments:
+
+```env
+LLM_API_ENDPOINT=https://your-custom-endpoint
+```
+
+## Best Practices
+
+1. **API Key Security**
+
+   - Never commit API keys to version control
+   - Use environment variables or secret management
+   - Rotate keys periodically
+
+2. **Model Selection**
+
+   - Start with default model for basic operations
+   - Test different models for specific use cases
+   - Consider cost vs. performance tradeoffs
+
+3. **Error Handling**
+   - Implement proper error handling
+   - Monitor API rate limits
+   - Set appropriate timeouts
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **API Key Issues**
+
+```bash
+Error: Authentication failed
+Solution: Verify API key is correct and has proper permissions
+```
+
+2. **Model Availability**
+
+```bash
+Error: Model not available
+Solution: Confirm model name and availability in your region
+```
+
+3. **Rate Limits**
+
+```bash
+Error: Rate limit exceeded
+Solution: Implement backoff strategy or upgrade API tier
+```
+
+## Next Steps
+
+- Try the [quickstart guide](/quickstart) with your configuration
+- Explore [supported actions](/actions/clicking)
+- Learn about [best practices](/best-practices/writing-commands)

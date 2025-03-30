@@ -1,0 +1,237 @@
+---
+title: "Clicking Actions"
+description: "Learn how to use natural language commands for clicking elements with Auto-Browse"
+---
+
+# Clicking Actions
+
+Auto-Browse provides an intuitive way to click elements using natural language commands. This guide covers various clicking scenarios and best practices.
+
+## Basic Clicking
+
+Click elements using natural language descriptions:
+
+```typescript
+// Click a button by its text
+await auto("click the Submit button");
+
+// Click a link by its text
+await auto("click the Learn More link");
+
+// Click an element by its role and name
+await auto('click the button labeled "Next"');
+```
+
+## Element Types
+
+Auto-Browse supports clicking various types of elements:
+
+### Buttons
+
+```typescript
+// Standard buttons
+await auto("click the Save button");
+await auto("click Submit");
+
+// Icon buttons with aria-labels
+await auto("click the close button");
+await auto("click the menu icon");
+
+// Button variants
+await auto("click the primary button");
+await auto("click the cancel button");
+```
+
+### Links
+
+```typescript
+// Text links
+await auto("click the About link");
+await auto("click Contact Us");
+
+// Links with icons
+await auto("click the home link with icon");
+await auto("click the external link");
+
+// Navigation links
+await auto("click the next page link");
+await auto("click the previous button");
+```
+
+### Form Elements
+
+```typescript
+// Checkboxes
+await auto('click the "Remember me" checkbox');
+await auto("check the terms and conditions box");
+
+// Radio buttons
+await auto('select the "Standard shipping" option');
+await auto('click the "Express" radio button');
+
+// Dropdowns
+await auto("click the country dropdown");
+await auto("click to open the menu");
+```
+
+## Advanced Clicking
+
+### Contextual Clicking
+
+Specify element context for more precise targeting:
+
+```typescript
+// Click within a specific section
+await auto("click the Save button in the form");
+await auto("click the Edit link in the user profile section");
+
+// Click with multiple context hints
+await auto("click the Delete button in the first item of the list");
+await auto("click the Download link in the latest notification");
+```
+
+### State-Based Clicking
+
+Handle elements based on their state:
+
+```typescript
+// Visibility checks
+await auto("click the button if it's visible");
+await auto("click the notification after it appears");
+
+// State-dependent clicking
+await auto("click the expand button if collapsed");
+await auto("click the play button when enabled");
+```
+
+### Multiple Elements
+
+Handle scenarios with multiple similar elements:
+
+```typescript
+// Click specific instances
+await auto("click the first delete button");
+await auto("click the last save button");
+
+// Click by index
+await auto("click the 2nd item in the list");
+await auto("click the 3rd tab");
+```
+
+## Best Practices
+
+### 1. Be Descriptive
+
+```typescript
+// Good - Clear and specific
+await auto("click the Submit button in the login form");
+
+// Less Clear - Ambiguous
+await auto("click submit");
+```
+
+### 2. Use Element Context
+
+```typescript
+// Good - Provides context
+await auto("click the Edit button in the user profile card");
+
+// Less Reliable - No context
+await auto("click edit");
+```
+
+### 3. Handle Dynamic Content
+
+```typescript
+// Good - Waits for element
+await auto("click the notification when it appears");
+
+// Good - Verifies before clicking
+await auto("verify the modal is open then click Close");
+```
+
+## Common Patterns
+
+### 1. Navigation Flows
+
+```typescript
+async function navigationExample() {
+	await auto("click the Products link in the main menu");
+	await auto("click the first category card");
+	await auto("click the Sort button");
+	await auto('click the option for "Price: Low to High"');
+}
+```
+
+### 2. Form Interactions
+
+```typescript
+async function formExample() {
+	await auto("click to open the form");
+	await auto('click the "Personal" tab');
+	await auto("click the birthday date picker");
+	await auto("click to select today's date");
+	await auto("click Submit");
+}
+```
+
+### 3. Modal Interactions
+
+```typescript
+async function modalExample() {
+	await auto("click to open settings");
+	await auto('click the "Advanced" tab in the modal');
+	await auto("click Save changes");
+	await auto("click to close the modal");
+}
+```
+
+## Error Handling
+
+Handle common clicking scenarios:
+
+```typescript
+try {
+	await auto("click the Submit button");
+} catch (error) {
+	if (error.message.includes("not clickable")) {
+		// Try scrolling into view first
+		await auto("scroll until the Submit button is visible");
+		await auto("click the Submit button");
+	}
+}
+```
+
+## Troubleshooting
+
+Common clicking issues and solutions:
+
+1. **Element Not Visible**
+
+```typescript
+// Scroll element into view first
+await auto("scroll until the button is visible");
+await auto("click the button");
+```
+
+2. **Element Covered by Another Element**
+
+```typescript
+// Close overlays first
+await auto("close the cookie notice");
+await auto("click the button");
+```
+
+3. **Dynamic Element Loading**
+
+```typescript
+// Wait for element to be ready
+await auto("wait for the Save button to appear");
+await auto("click the Save button");
+```
+
+## Next Steps
+
+- Learn about [Typing Actions](/actions/typing)
+- Explore [Form Interactions](/actions/forms)
+- Check out [Navigation Actions](/actions/navigation)

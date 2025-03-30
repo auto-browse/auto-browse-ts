@@ -1,0 +1,266 @@
+---
+title: "Verification Actions"
+description: "Learn how to verify page content and state using Auto-Browse"
+---
+
+# Verification Actions
+
+Auto-Browse provides natural language commands for verifying page content, element states, and application behavior. This guide covers various verification scenarios and best practices.
+
+## Basic Verification
+
+Verify page elements and content:
+
+```typescript
+// Check element presence
+await auto("verify the login button is visible");
+await auto("check if error message is displayed");
+
+// Verify text content
+await auto('verify page title is "Welcome"');
+await auto("check if success message contains order number");
+```
+
+## Element State Verification
+
+### Visibility States
+
+```typescript
+// Basic visibility
+await auto("verify the menu is visible");
+await auto("check if loading spinner is hidden");
+
+// Conditional visibility
+await auto("verify tooltip appears on hover");
+await auto("check if dropdown opens when clicked");
+```
+
+### Element Properties
+
+```typescript
+// Attribute verification
+await auto('verify submit button is "disabled"');
+await auto("check if input field is required");
+
+// Class verification
+await auto("verify error class is applied");
+await auto("check if menu item is active");
+```
+
+### Input States
+
+```typescript
+// Form field values
+await auto('verify email field contains "user@example.com"');
+await auto("check if password field is empty");
+
+// Selection states
+await auto('verify "Terms" checkbox is checked');
+await auto('check if "Express Shipping" is selected');
+```
+
+## Content Verification
+
+### Text Content
+
+```typescript
+// Exact text matching
+await auto('verify heading text is "Welcome"');
+await auto('check if error says "Invalid input"');
+
+// Partial text matching
+await auto("verify message contains order ID");
+await auto("check if description includes product name");
+```
+
+### Rich Content
+
+```typescript
+// HTML content
+await auto("verify formatted text is bold");
+await auto("check if link contains correct href");
+
+// Media content
+await auto("verify image is loaded");
+await auto("check if video is playing");
+```
+
+## Page State Verification
+
+### URL Verification
+
+```typescript
+// Basic URL checks
+await auto("verify URL is /dashboard");
+await auto("check if URL contains user ID");
+
+// Query parameters
+await auto('verify search parameter is "active"');
+await auto("check if filter parameters are correct");
+```
+
+### Document State
+
+```typescript
+// Page load state
+await auto("verify page is fully loaded");
+await auto("check if all resources are loaded");
+
+// Document properties
+await auto("verify page title is correct");
+await auto("check if meta description is set");
+```
+
+## Dynamic Content Verification
+
+### Loading States
+
+```typescript
+// Loading indicators
+await auto("verify loading state is complete");
+await auto("check if skeleton loader is hidden");
+
+// Content updates
+await auto("verify new content is loaded");
+await auto("check if list is updated");
+```
+
+### Async Operations
+
+```typescript
+// Operation completion
+await auto("verify form submission completed");
+await auto("check if data is saved");
+
+// State transitions
+await auto("verify transition is complete");
+await auto("check if animation finished");
+```
+
+## Best Practices
+
+### 1. Clear Assertions
+
+```typescript
+// Good - Specific and clear
+await auto("verify login button shows 'Sign In'");
+
+// Less Clear - Ambiguous
+await auto("check button text");
+```
+
+### 2. Proper Waiting
+
+```typescript
+// Good - Waits for state
+await auto("verify data loads and table shows 10 rows");
+
+// Better - With explicit waiting
+await auto("wait for table to load");
+await auto("verify table has 10 rows");
+```
+
+### 3. Error Messages
+
+```typescript
+// Good - Descriptive error state
+await auto('verify error shows "Please enter valid email"');
+
+// Better - With state check
+await auto("verify email field shows error state");
+await auto("check if error message is correct");
+```
+
+## Common Patterns
+
+### 1. Form Validation
+
+```typescript
+async function verifyFormValidation() {
+	// Check initial state
+	await auto("verify form is empty");
+
+	// Submit empty form
+	await auto("click submit");
+	await auto("verify required field errors are shown");
+
+	// Fill invalid data
+	await auto('type "invalid" in email field');
+	await auto("verify email format error is shown");
+}
+```
+
+### 2. Navigation State
+
+```typescript
+async function verifyNavigation() {
+	// Check navigation state
+	await auto("verify current page is dashboard");
+	await auto("check if active menu item is correct");
+
+	// Verify breadcrumbs
+	await auto("verify breadcrumb shows correct path");
+}
+```
+
+### 3. Data Display
+
+```typescript
+async function verifyDataDisplay() {
+	// Check data loading
+	await auto("verify data table is populated");
+	await auto("check if sorting is applied");
+
+	// Verify content
+	await auto("verify all columns are visible");
+	await auto("check if data formatting is correct");
+}
+```
+
+## Error Handling
+
+Handle verification failures:
+
+```typescript
+try {
+	await auto("verify payment is processed");
+} catch (error) {
+	// Check for specific failure cases
+	await auto("check if payment is pending");
+	await auto("verify no error message is shown");
+}
+```
+
+## Troubleshooting
+
+Common verification issues and solutions:
+
+1. **Timing Issues**
+
+```typescript
+// Handle async content
+await auto("wait for content to stabilize");
+await auto("verify content is updated");
+```
+
+2. **State Inconsistencies**
+
+```typescript
+// Reset and retry
+await auto("refresh the page");
+await auto("verify expected state");
+```
+
+3. **Dynamic Content**
+
+```typescript
+// Handle changing content
+await auto("wait for dynamic content");
+await auto("verify content matches pattern");
+```
+
+## Next Steps
+
+- Learn about [Form Actions](/actions/forms)
+- Explore [Navigation](/actions/navigation)
+- Check out [Error Handling](/actions/troubleshooting)

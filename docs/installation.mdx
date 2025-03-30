@@ -1,0 +1,127 @@
+---
+title: "Installation"
+description: "Detailed installation and setup guide for Auto-Browse"
+---
+
+# Installation Guide
+
+This guide will walk you through the complete installation and setup process for Auto-Browse.
+
+## Prerequisites
+
+Before installing Auto-Browse, make sure you have:
+
+- Node.js 16 or higher
+- npm or yarn package manager
+- A code editor (VSCode recommended)
+
+## Package Installation
+
+Install Auto-Browse using npm:
+
+```bash
+npm install @auto-browse/auto-browse
+```
+
+Or using yarn:
+
+```bash
+yarn add @auto-browse/auto-browse
+```
+
+## Environment Configuration
+
+Auto-Browse requires configuration through environment variables for the Language Model (LLM) settings.
+
+### Setting up Environment Variables
+
+1. Create a `.env` file in your project root:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+```
+
+### Environment Variables Reference
+
+| Variable         | Description          | Default       | Required |
+| ---------------- | -------------------- | ------------- | -------- |
+| `OPENAI_API_KEY` | Your OpenAI API key  | -             | Yes      |
+| `LLM_MODEL`      | The LLM model to use | `gpt-4o-mini` | No       |
+
+## TypeScript Configuration
+
+If you're using TypeScript (recommended), ensure your `tsconfig.json` includes:
+
+```json
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"esModuleInterop": true
+	}
+}
+```
+
+## Playwright Integration
+
+While Auto-Browse can be used standalone, it's designed to work seamlessly with Playwright. If you plan to use it with Playwright tests:
+
+1. Install Playwright:
+
+```bash
+npm init playwright@latest
+```
+
+2. Configure Playwright with Auto-Browse:
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+	use: {
+		// Your existing Playwright config
+	},
+	// Recommended timeouts for AI operations
+	timeout: 60000,
+	expect: {
+		timeout: 10000
+	}
+});
+```
+
+## Verification
+
+To verify your installation:
+
+1. Create a test file (e.g., `test.ts`):
+
+```typescript
+import { auto } from "auto-browse";
+
+async function verify() {
+	try {
+		await auto("go to https://example.com");
+		await auto("take a snapshot");
+		console.log("Auto-Browse is working correctly!");
+	} catch (error) {
+		console.error("Error:", error);
+	}
+}
+
+verify();
+```
+
+2. Run the test:
+
+```bash
+npx ts-node test.ts
+```
+
+## Next Steps
+
+- Learn about [environment setup](/environment-setup) for different LLM providers
+- Check out the [quickstart guide](/quickstart) for basic usage
+- Explore [supported actions](/actions/clicking) to see what you can do
