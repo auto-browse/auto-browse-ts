@@ -194,21 +194,13 @@ Feature: Playwright Home Page
 
 ```typescript
 import { auto } from "@auto-browse/auto-browse";
-import { Given, When, Then } from "./fixtures";
+import { Given, When as aistep, Then } from "./fixtures";
 
 // Generic step that handles any natural language action
-When(/^(.*)$/, async ({ page }, action: string) => {
+aistep(/^(.*)$/, async ({ page }, action: string) => {
 	await auto(action, { page });
 });
 
-// You can also create specific steps for better readability
-Given("navigate to {string}", async ({ page }, url: string) => {
-	await auto(`navigate to ${url}`, { page });
-});
-
-Then("assert title {string}", async ({ page }, title: string) => {
-	await auto(`assert title is "${title}"`, { page });
-});
 ```
 
 #### Setup Requirements
