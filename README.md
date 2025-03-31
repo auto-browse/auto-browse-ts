@@ -2,9 +2,17 @@
 
 **Auto Browse** is the easiest way to connect your AI agents with the browser using natural language.
 
+[![Auto-Browse Launch Video](https://img.youtube.com/vi/VxJg3RRShoY/maxresdefault.jpg)](https://youtu.be/VxJg3RRShoY)
+
+🎥 [Watch the launch video](https://youtu.be/VxJg3RRShoY)
+
 ## Quick start
 
 An AI-powered browser automation agent for automating browser tasks and Write Playwright tests that enables natural language interactions with web pages.
+
+## Examples
+
+Check out our [TypeScript BDD Example Repository](https://github.com/auto-browse/auto-browse-typescript-bdd-example) to see a complete implementation using Auto Browse with BDD testing patterns.
 
 ## Installation
 
@@ -302,7 +310,6 @@ Supported Operations:
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 Thanks to Playwright Team for creating Playwright MCP and Playwright BDD.
-
 
 ## License
 
