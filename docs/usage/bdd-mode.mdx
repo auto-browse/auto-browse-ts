@@ -77,10 +77,10 @@ Note, you only need one step definition for the `When` step, as it will handle a
 
 ```typescript
 import { auto } from "@auto-browse/auto-browse";
-import { Given, When, Then } from "./fixtures";
+import { Given, When as aistep, Then } from "./fixtures";
 
 // Generic step that handles any natural language action
-When(/^(.*)$/, async ({ page }, action: string) => {
+aistep(/^(.*)$/, async ({ page }, action: string) => {
 	await auto(action, { page });
 });
 ```
@@ -108,10 +108,10 @@ Feature: User Login
 
 ```typescript
 import { auto } from "@auto-browse/auto-browse";
-import { Given, When, Then } from "./fixtures";
+import { Given, When aistep, Then } from "./fixtures";
 
 // Generic step that handles any natural language action
-When(/^(.*)$/, async ({ page }, action: string) => {
+aistep(/^(.*)$/, async ({ page }, action: string) => {
 	await auto(action, { page });
 });
 ```
