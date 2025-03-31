@@ -301,6 +301,9 @@ Supported Operations:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+Thanks to Playwright Team for creating Playwright MCP and Playwright BDD.
+
+
 ## License
 
 MIT
