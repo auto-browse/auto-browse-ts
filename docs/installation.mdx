@@ -29,6 +29,42 @@ Or using yarn:
 yarn add @auto-browse/auto-browse
 ```
 
+## ⚠️ Important: Playwright Version Requirements
+
+Auto Browse currently requires specific versions of Playwright. This requirement will be relaxed in future versions.
+
+### Required Versions
+
+```bash
+"@playwright/test": "1.52.0-alpha-1743011787000"
+"playwright": "1.52.0-alpha-1743011787000"
+```
+
+### Version Conflicts
+
+If you're using Auto Browse alongside an existing Playwright setup, you must upgrade to these specific versions. Here's how to handle common issues:
+
+1. **Installation Conflicts**
+
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+   This flag helps resolve peer dependency conflicts during installation.
+
+2. **Multiple Playwright Versions**
+
+   - Remove existing Playwright installations
+   - Clear npm cache if needed: `npm cache clean --force`
+   - Reinstall with the required versions
+
+3. **Project Compatibility**
+   - Update your project's Playwright configuration
+   - Ensure your existing tests are compatible with the alpha version
+   - Consider using a separate test environment if needed
+
+> 🔄 Future releases will support a wider range of Playwright versions. Subscribe to our GitHub repository for updates.
+
 ## Environment Configuration
 
 Auto-Browse requires configuration through environment variables for the Language Model (LLM) settings.
