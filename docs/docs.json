@@ -7,14 +7,14 @@
     "light": "#ff8787",
     "dark": "#ff4f4f"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo.svg",
   "navigation": {
     "tabs": [
       {
         "tab": "Getting Started",
         "groups": [
           {
-            "group": "Guide",
+            "group": "Introduction",
             "pages": [
               "introduction",
               "quickstart",
@@ -32,7 +32,8 @@
             "pages": [
               "usage/standalone-mode",
               "usage/playwright-test-mode",
-              "usage/auto-detection-mode"
+              "usage/auto-detection-mode",
+              "usage/bdd-mode"
             ]
           },
           {

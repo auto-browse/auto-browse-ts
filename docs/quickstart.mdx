@@ -29,7 +29,7 @@ LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
 Here's a complete example showing form automation:
 
 ```typescript
-import { auto } from "auto-browse";
+import { auto } from "@auto-browse/auto-browse";
 
 async function main() {
 	try {
@@ -65,7 +65,7 @@ Auto-Browse seamlessly integrates with Playwright tests:
 
 ```typescript
 import { test, expect } from "@playwright/test";
-import { auto } from "auto-browse";
+import { auto } from "@auto-browse/auto-browse";
 
 test("example test", async ({ page }) => {
 	await page.goto("https://example.com");

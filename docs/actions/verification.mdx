@@ -1,174 +1,108 @@
 ---
 title: "Verification Actions"
-description: "Learn how to verify page content and state using Auto-Browse"
+description: "Learn how to verify element states and content using Auto-Browse's assertions"
 ---
 
 # Verification Actions
 
-Auto-Browse provides natural language commands for verifying page content, element states, and application behavior. This guide covers various verification scenarios and best practices.
+Auto-Browse provides a set of core assertions for verifying element states and content. These natural language commands make it easy to validate your application's behavior.
 
-## Basic Verification
+## Supported Assertions
 
-Verify page elements and content:
+Auto-Browse currently supports four fundamental assertion types:
+
+### Element Visibility
+
+Check if elements are visible on the page:
 
 ```typescript
-// Check element presence
+// Verify element visibility
 await auto("verify the login button is visible");
 await auto("check if error message is displayed");
 
-// Verify text content
-await auto('verify page title is "Welcome"');
-await auto("check if success message contains order number");
+// Wait and verify
+await auto("wait for loading spinner to disappear");
+await auto("verify success message becomes visible");
 ```
-
-## Element State Verification
-
-### Visibility States
-
-```typescript
-// Basic visibility
-await auto("verify the menu is visible");
-await auto("check if loading spinner is hidden");
-
-// Conditional visibility
-await auto("verify tooltip appears on hover");
-await auto("check if dropdown opens when clicked");
-```
-
-### Element Properties
-
-```typescript
-// Attribute verification
-await auto('verify submit button is "disabled"');
-await auto("check if input field is required");
-
-// Class verification
-await auto("verify error class is applied");
-await auto("check if menu item is active");
-```
-
-### Input States
-
-```typescript
-// Form field values
-await auto('verify email field contains "user@example.com"');
-await auto("check if password field is empty");
-
-// Selection states
-await auto('verify "Terms" checkbox is checked');
-await auto('check if "Express Shipping" is selected');
-```
-
-## Content Verification
 
 ### Text Content
+
+Verify the text content of elements:
 
 ```typescript
 // Exact text matching
 await auto('verify heading text is "Welcome"');
-await auto('check if error says "Invalid input"');
+await auto('check if error message says "Invalid input"');
 
-// Partial text matching
-await auto("verify message contains order ID");
-await auto("check if description includes product name");
+// Dynamic content
+await auto("verify message contains order number");
+await auto("check if username is displayed correctly");
 ```
 
-### Rich Content
+### Element State
+
+Check if elements are enabled:
 
 ```typescript
-// HTML content
-await auto("verify formatted text is bold");
-await auto("check if link contains correct href");
+// Button states
+await auto("verify submit button is enabled");
+await auto("check if save button is clickable");
 
-// Media content
-await auto("verify image is loaded");
-await auto("check if video is playing");
+// Input field states
+await auto("verify email field is enabled");
+await auto("check if password field is active");
 ```
 
-## Page State Verification
+### Checkbox/Radio State
 
-### URL Verification
-
-```typescript
-// Basic URL checks
-await auto("verify URL is /dashboard");
-await auto("check if URL contains user ID");
-
-// Query parameters
-await auto('verify search parameter is "active"');
-await auto("check if filter parameters are correct");
-```
-
-### Document State
+Verify if checkboxes or radio buttons are checked:
 
 ```typescript
-// Page load state
-await auto("verify page is fully loaded");
-await auto("check if all resources are loaded");
+// Checkbox verification
+await auto('verify "Remember me" checkbox is checked');
+await auto('check if "Terms" box is selected');
 
-// Document properties
-await auto("verify page title is correct");
-await auto("check if meta description is set");
-```
-
-## Dynamic Content Verification
-
-### Loading States
-
-```typescript
-// Loading indicators
-await auto("verify loading state is complete");
-await auto("check if skeleton loader is hidden");
-
-// Content updates
-await auto("verify new content is loaded");
-await auto("check if list is updated");
-```
-
-### Async Operations
-
-```typescript
-// Operation completion
-await auto("verify form submission completed");
-await auto("check if data is saved");
-
-// State transitions
-await auto("verify transition is complete");
-await auto("check if animation finished");
+// Radio button verification
+await auto('verify "Express shipping" is selected');
+await auto('check if "Credit card" option is checked');
 ```
 
 ## Best Practices
 
-### 1. Clear Assertions
+### 1. Clear and Specific Assertions
 
 ```typescript
-// Good - Specific and clear
-await auto("verify login button shows 'Sign In'");
+// Good - Clear what to verify
+await auto('verify login button shows "Sign In"');
+await auto("check if error message is visible");
 
 // Less Clear - Ambiguous
-await auto("check button text");
+await auto("verify button");
+await auto("check text");
 ```
 
-### 2. Proper Waiting
+### 2. Proper Wait States
 
 ```typescript
 // Good - Waits for state
-await auto("verify data loads and table shows 10 rows");
+await auto("wait for button to be enabled then verify");
+await auto("verify message appears after loading");
 
-// Better - With explicit waiting
-await auto("wait for table to load");
-await auto("verify table has 10 rows");
+// Not Recommended - No wait
+await auto("verify button is enabled");
 ```
 
-### 3. Error Messages
+### 3. Error Handling
 
 ```typescript
-// Good - Descriptive error state
-await auto('verify error shows "Please enter valid email"');
-
-// Better - With state check
-await auto("verify email field shows error state");
-await auto("check if error message is correct");
+try {
+	await auto("verify form submission succeeded");
+} catch (error) {
+	// Handle specific assertion failures
+	if (error.message.includes("not visible")) {
+		await auto("check if error message is shown");
+	}
+}
 ```
 
 ## Common Patterns
@@ -176,58 +110,43 @@ await auto("check if error message is correct");
 ### 1. Form Validation
 
 ```typescript
-async function verifyFormValidation() {
+async function validateForm() {
 	// Check initial state
-	await auto("verify form is empty");
+	await auto("verify submit button is enabled");
 
 	// Submit empty form
 	await auto("click submit");
-	await auto("verify required field errors are shown");
-
-	// Fill invalid data
-	await auto('type "invalid" in email field');
-	await auto("verify email format error is shown");
+	await auto("verify error message is visible");
+	await auto('check if error says "Required fields missing"');
 }
 ```
 
-### 2. Navigation State
+### 2. Login Flow
 
 ```typescript
-async function verifyNavigation() {
-	// Check navigation state
-	await auto("verify current page is dashboard");
-	await auto("check if active menu item is correct");
+async function verifyLogin() {
+	// Pre-login state
+	await auto("verify login button is visible");
 
-	// Verify breadcrumbs
-	await auto("verify breadcrumb shows correct path");
+	// After login
+	await auto('type "user@example.com" in email');
+	await auto('type "password" in password');
+	await auto("click login");
+	await auto("verify welcome message is visible");
 }
 ```
 
-### 3. Data Display
+### 3. Interactive Elements
 
 ```typescript
-async function verifyDataDisplay() {
-	// Check data loading
-	await auto("verify data table is populated");
-	await auto("check if sorting is applied");
+async function verifyInteractions() {
+	// Button states
+	await auto("verify button is enabled");
+	await auto("click button");
 
-	// Verify content
-	await auto("verify all columns are visible");
-	await auto("check if data formatting is correct");
-}
-```
-
-## Error Handling
-
-Handle verification failures:
-
-```typescript
-try {
-	await auto("verify payment is processed");
-} catch (error) {
-	// Check for specific failure cases
-	await auto("check if payment is pending");
-	await auto("verify no error message is shown");
+	// Checkbox interactions
+	await auto("click remember me checkbox");
+	await auto("verify checkbox is checked");
 }
 ```
 
@@ -235,32 +154,32 @@ try {
 
 Common verification issues and solutions:
 
-1. **Timing Issues**
+1. **Visibility Issues**
 
 ```typescript
-// Handle async content
-await auto("wait for content to stabilize");
-await auto("verify content is updated");
+// Handle element visibility
+await auto("scroll element into view");
+await auto("verify element is visible");
 ```
 
-2. **State Inconsistencies**
+2. **Timing Issues**
 
 ```typescript
-// Reset and retry
-await auto("refresh the page");
-await auto("verify expected state");
+// Handle loading states
+await auto("wait for loading to complete");
+await auto("verify content is visible");
 ```
 
-3. **Dynamic Content**
+3. **State Changes**
 
 ```typescript
-// Handle changing content
-await auto("wait for dynamic content");
-await auto("verify content matches pattern");
+// Handle dynamic states
+await auto("click to change state");
+await auto("verify new state is correct");
 ```
 
 ## Next Steps
 
 - Learn about [Form Actions](/actions/forms)
 - Explore [Navigation](/actions/navigation)
-- Check out [Error Handling](/actions/troubleshooting)
+- Check out other [Action Types](/actions/clicking)

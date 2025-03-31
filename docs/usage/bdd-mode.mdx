@@ -1,0 +1,103 @@
+---
+title: "BDD Mode with Playwright-BDD"
+description: "Learn how to use Auto-Browse with Playwright-BDD for behavior-driven development"
+---
+
+# BDD Mode with Playwright-BDD
+
+Auto-Browse seamlessly integrates with [playwright-bdd](https://github.com/vitalets/playwright-bdd) to enable behavior-driven development. This integration allows you to write expressive feature files and implement steps using natural language commands.
+
+## Setup
+
+1. Install required dependencies:
+
+```bash
+npm install --save-dev playwright-bdd
+```
+
+2. Configure `playwright.config.ts`:
+
+```typescript
+import { PlaywrightTestConfig } from "@playwright/test";
+
+const config: PlaywrightTestConfig = {
+	testDir: "./features",
+	use: {
+		baseURL: "https://playwright.dev"
+	}
+};
+
+export default config;
+```
+
+## Writing Tests
+
+### Feature Files
+
+Create Gherkin feature files to describe your test scenarios:
+
+```gherkin
+# features/homepage.feature
+Feature: Playwright Home Page
+
+  Scenario: Check title
+    Given navigate to https://playwright.dev
+    When click link "Get started"
+    Then assert title "Installation"
+```
+
+### Step Definitions
+
+Implement your steps using Auto-Browse's natural language commands:
+Note, you only need one step definition for the `When` step, as it will handle all actions.
+(It can be when, given or then either of one step)
+
+```typescript
+import { auto } from "@auto-browse/auto-browse";
+import { Given, When, Then } from "./fixtures";
+
+// Generic step that handles any natural language action
+When(/^(.*)$/, async ({ page }, action: string) => {
+	await auto(action, { page });
+});
+```
+
+## Example Implementation
+
+Here's a complete example showing how to test a login flow:
+
+### Feature File
+
+```gherkin
+# features/login.feature
+Feature: User Login
+
+  Scenario: Successful login
+    Given navigate to the login page
+    When enter "user@example.com" in email field
+    And enter "password123" in password field
+    And click the login button
+    Then verify dashboard is visible
+    And check welcome message contains "Hello, User"
+```
+
+### Step Definitions
+
+```typescript
+import { auto } from "@auto-browse/auto-browse";
+import { Given, When, Then } from "./fixtures";
+
+// Generic step that handles any natural language action
+When(/^(.*)$/, async ({ page }, action: string) => {
+	await auto(action, { page });
+});
+```
+
+```
+
+## Next Steps
+
+- Learn about [Standalone Mode](/usage/standalone-mode)
+- Explore [Test Mode](/usage/playwright-test-mode)
+- Check out [Supported Actions](/actions/clicking)
+```
