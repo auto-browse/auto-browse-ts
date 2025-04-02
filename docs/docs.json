@@ -17,6 +17,7 @@
             "group": "Guide",
             "pages": [
               "introduction",
+              "faq",
               "quickstart",
               "installation",
               "environment-setup"
