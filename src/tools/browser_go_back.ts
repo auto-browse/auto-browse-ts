@@ -5,8 +5,11 @@ import { context } from '../browser/context';
 
 /**
  * Schema for going back in browser history
+ * Includes dummy property to satisfy Gemini's API requirement for non-empty object properties
  */
-const goBackSchema = z.object({});
+const goBackSchema = z.object({
+    _: z.string().optional().describe('No parameters required for this operation')
+});
 
 export const browser_go_back = tool(
     async () => {
