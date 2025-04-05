@@ -5,9 +5,12 @@ import os from 'os';
 import path from 'path';
 
 /**
- * Schema for saving page as PDF
+ * Schema for saving PDF
+ * Includes dummy property to satisfy Gemini's API requirement for non-empty object properties
  */
-const pdfSchema = z.object({});
+const pdfSchema = z.object({
+    _: z.string().optional().describe('No parameters required for this operation')
+});
 
 export const browser_save_pdf = tool(
     async () => {

@@ -74,16 +74,25 @@ Auto-Browse requires configuration through environment variables for the Languag
 1. Create a `.env` file in your project root:
 
 ```env
+# For OpenAI (default)
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+LLM_PROVIDER=openai  # Optional, this is default
+AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+
+# Or for Google AI
+GOOGLE_API_KEY=your_google_key_here
+LLM_PROVIDER=google
+AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite  # Or other supported model
 ```
 
 ### Environment Variables Reference
 
-| Variable         | Description          | Default       | Required |
-| ---------------- | -------------------- | ------------- | -------- |
-| `OPENAI_API_KEY` | Your OpenAI API key  | -             | Yes      |
-| `LLM_MODEL`      | The LLM model to use | `gpt-4o-mini` | No       |
+| Variable               | Description                         | Default       | Required   |
+| ---------------------- | ----------------------------------- | ------------- | ---------- |
+| `LLM_PROVIDER`         | LLM provider to use (openai/google) | `openai`      | No         |
+| `OPENAI_API_KEY`       | Your OpenAI API key                 | -             | For OpenAI |
+| `GOOGLE_API_KEY`       | Your Google AI API key              | -             | For Google |
+| `AUTOBROWSE_LLM_MODEL` | The LLM model to use                | `gpt-4o-mini` | No         |
 
 ## TypeScript Configuration
 

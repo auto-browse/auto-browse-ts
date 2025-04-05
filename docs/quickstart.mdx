@@ -17,12 +17,21 @@ npm install @auto-browse/auto-browse
 
 ## Basic Setup
 
-1. Create a `.env` file in your project root with your OpenAI API key:
+1. Create a `.env` file in your project root:
 
 ```env
+# For OpenAI (default)
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+LLM_PROVIDER=openai  # Optional, this is default
+AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+
+# Or for Google AI
+GOOGLE_API_KEY=your_google_key_here
+LLM_PROVIDER=google
+AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite  # Or other supported model
 ```
+
+Auto-Browse supports multiple LLM providers, with OpenAI as the default.
 
 ## Simple Example
 

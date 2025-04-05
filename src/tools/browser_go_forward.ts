@@ -4,39 +4,42 @@ import { runAndWait } from './utils';
 import { context } from '../browser/context';
 
 /**
- * Schema for going back in browser history
+ * Schema for going forward in browser history
+ * Includes dummy property to satisfy Gemini's API requirement for non-empty object properties
  */
-const goBackSchema = z.object({});
+const goForwardSchema = z.object({
+    _: z.string().optional().describe('No parameters required for this operation')
+});
 
 export const browser_go_forward = tool(
     async () => {
         try
         {
-            console.log(`[Go Back Tool] Starting operation`);
+            console.log(`[Go Forward Tool] Starting operation`);
 
             const result = await runAndWait(
                 context,
-                'Navigated back',
+                'Navigated forward',
                 async (page) => {
-                    console.log(`[Go Back Tool] Going back to previous page`);
+                    console.log(`[Go Forward Tool] Going forward to next page`);
                     await page.goForward();
-                    console.log(`[Go Back Tool] Operation successful`);
+                    console.log(`[Go Forward Tool] Operation successful`);
                 },
                 true
             );
 
-            console.log(`[Go Back Tool] Operation completed`);
+            console.log(`[Go Forward Tool] Operation completed`);
             return result;
         } catch (error)
         {
-            const errorMessage = `Failed to go back: ${error instanceof Error ? error.message : 'Unknown error'}`;
-            console.error(`[Go Back Tool] Error:`, errorMessage);
+            const errorMessage = `Failed to go forward: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            console.error(`[Go Forward Tool] Error:`, errorMessage);
             return errorMessage;
         }
     },
     {
-        name: "goBack",
-        description: "Go back to the previous page",
-        schema: goBackSchema
+        name: "goForward",
+        description: "Go forward to the next page",
+        schema: goForwardSchema
     }
 );

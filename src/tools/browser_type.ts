@@ -10,7 +10,7 @@ const typeSchema = z.object({
     element: z.string().describe('Human-readable element description for the target field'),
     ref: z.string().describe('Element reference from page snapshot to locate the field'),
     text: z.string().describe('The text to type into the element'),
-    submit: z.boolean().optional().describe('Whether to submit by pressing Enter after typing').default(false)
+    submit: z.boolean().optional().describe('Whether to submit by pressing Enter after typing')
 });
 
 export const browser_type = tool(

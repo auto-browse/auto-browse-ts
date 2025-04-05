@@ -3,7 +3,12 @@ import { z } from "zod";
 import { context } from '../browser/context';
 import { captureAriaSnapshot } from './utils';
 
-const snapshotSchema = z.object({});
+/**
+ * Schema with dummy property to satisfy Gemini's API requirement for non-empty object properties
+ */
+const snapshotSchema = z.object({
+    _: z.string().optional().describe('No parameters required for this operation')
+});
 
 export const browser_snapshot = tool(
     async () => {

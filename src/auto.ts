@@ -1,25 +1,15 @@
 import { test as base } from '@playwright/test';
 import { AutoConfig } from './types';
 import { sessionManager, context } from './browser';
-import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage } from "@langchain/core/messages";
-import dotenv from 'dotenv';
+import { createLLMModel } from './llm';
 import {
     browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
     browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
     browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
     browser_go_forward, browser_assert
 } from './tools';
-
-// Load environment variables
-dotenv.config();
-const openai_llm_model = process.env.LLM_MODEL || 'gpt-4o-mini';
-
-const openai_model = new ChatOpenAI({
-    modelName: openai_llm_model,
-    temperature: 0,
-});
 
 // Extend base test to automatically track page
 export const test = base.extend({
@@ -31,7 +21,7 @@ export const test = base.extend({
 
 // Initialize the LangChain agent with more detailed instructions
 const initializeAgent = () => {
-    const model = openai_model;
+    const model = createLLMModel();
 
     const prompt =
         `You are a web automation assistant. When given a natural language instruction:
@@ -66,8 +56,6 @@ const initializeAgent = () => {
 
     return { agent };
 };
-
-
 
 // Main auto function that processes instructions
 export async function auto(instruction: string, config?: AutoConfig): Promise<any> {
