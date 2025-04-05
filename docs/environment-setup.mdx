@@ -5,13 +5,11 @@ description: "Configure Auto-Browse with different LLM providers and environment
 
 # Environment Setup
 
-Auto-Browse supports various Language Model (LLM) providers to power its AI capabilities. This guide covers the setup for each supported provider.
+Auto-Browse supports multiple Language Model (LLM) providers to power its AI capabilities. This guide covers the setup for each supported provider.
 
-## OpenAI Configuration
+## Supported Providers
 
-OpenAI is the default and currently supported LLM provider.
-
-### Setup Steps
+### OpenAI (Default Provider)
 
 1. Get your OpenAI API key:
 
@@ -24,15 +22,26 @@ OpenAI is the default and currently supported LLM provider.
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+LLM_PROVIDER=openai  # Optional, this is default
+AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
 ```
 
-### Model Options
+#### Model Options
 
 OpenAI models supported:
 
 - `gpt-4o-mini` (default)
 - Compatible GPT models
+
+### Google AI
+
+Configure your environment:
+
+```env
+GOOGLE_API_KEY=your_google_key_here
+LLM_PROVIDER=google
+AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite  # Or other supported model
+```
 
 ## Upcoming Provider Support
 
@@ -43,15 +52,7 @@ The following LLM providers will be supported in future releases:
 ```env
 ANTHROPIC_API_KEY=your_anthropic_key_here
 LLM_PROVIDER=anthropic
-LLM_MODEL=claude-3  # Example model
-```
-
-### Google Gemini
-
-```env
-GOOGLE_API_KEY=your_google_key_here
-LLM_PROVIDER=gemini
-LLM_MODEL=gemini-pro  # Example model
+AUTOBROWSE_LLM_MODEL=claude-3  # Example model
 ```
 
 ### Local LLMs

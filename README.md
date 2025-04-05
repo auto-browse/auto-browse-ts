@@ -61,29 +61,38 @@ If you're using Auto Browse alongside an existing Playwright setup, you must upg
 Auto Browse requires environment variables for the LLM (Language Model) configuration. Create a `.env` file in your project root:
 
 ```env
+# For OpenAI (default)
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+LLM_PROVIDER=openai  # Optional, this is default
+AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+
+# Or for Google AI
+GOOGLE_API_KEY=your_google_key_here
+LLM_PROVIDER=google
+AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite  # Or other supported model
 ```
 
 You can find an example configuration in `example.env`.
 
 ### Environment Variables
 
-| Variable         | Description                    | Default       |
-| ---------------- | ------------------------------ | ------------- |
-| `OPENAI_API_KEY` | Your OpenAI API key (required) | -             |
-| `LLM_MODEL`      | The LLM model to use           | `gpt-4o-mini` |
+| Variable               | Description                         | Default       |
+| ---------------------- | ----------------------------------- | ------------- |
+| `LLM_PROVIDER`         | LLM provider to use (openai/google) | `openai`      |
+| `OPENAI_API_KEY`       | Your OpenAI API key                 | -             |
+| `GOOGLE_API_KEY`       | Your Google AI API key              | -             |
+| `AUTOBROWSE_LLM_MODEL` | The LLM model to use                | `gpt-4o-mini` |
 
 ## Supported LLM Providers
 
 Currently supported:
 
 - OpenAI (gpt-4o-mini and compatible models)
+- Google AI (Gemini models)
 
 Coming soon:
 
 - Anthropic Claude
-- Google Gemini
 - Local LLMs
 - Meta Llama
 
@@ -200,7 +209,6 @@ import { Given, When as aistep, Then } from "./fixtures";
 aistep(/^(.*)$/, async ({ page }, action: string) => {
 	await auto(action, { page });
 });
-
 ```
 
 #### Setup Requirements
