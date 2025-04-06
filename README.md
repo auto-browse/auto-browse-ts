@@ -61,40 +61,66 @@ If you're using Auto Browse alongside an existing Playwright setup, you must upg
 Auto Browse requires environment variables for the LLM (Language Model) configuration. Create a `.env` file in your project root:
 
 ```env
-# For OpenAI (default)
+# OpenAI (default)
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_PROVIDER=openai  # Optional, this is default
+LLM_PROVIDER=openai  # Optional, defaults to openai
 AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
 
-# Or for Google AI
+# Google AI
 GOOGLE_API_KEY=your_google_key_here
 LLM_PROVIDER=google
-AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite  # Or other supported model
+AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite
+
+# Azure OpenAI
+AZURE_OPENAI_API_KEY=your_azure_key_here
+AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_API_DEPLOYMENT_NAME=your-deployment-name
+LLM_PROVIDER=azure
+
+# Anthropic
+ANTHROPIC_API_KEY=your_anthropic_key_here
+LLM_PROVIDER=anthropic
+AUTOBROWSE_LLM_MODEL=claude-3
+
+# Google Vertex AI
+GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
+LLM_PROVIDER=vertex
+
+# Ollama
+BASE_URL=http://localhost:11434  # Optional, defaults to this value
+LLM_PROVIDER=ollama
+AUTOBROWSE_LLM_MODEL=llama3.1
 ```
 
 You can find an example configuration in `example.env`.
 
 ### Environment Variables
 
-| Variable               | Description                         | Default       |
-| ---------------------- | ----------------------------------- | ------------- |
-| `LLM_PROVIDER`         | LLM provider to use (openai/google) | `openai`      |
-| `OPENAI_API_KEY`       | Your OpenAI API key                 | -             |
-| `GOOGLE_API_KEY`       | Your Google AI API key              | -             |
-| `AUTOBROWSE_LLM_MODEL` | The LLM model to use                | `gpt-4o-mini` |
+| Variable                           | Description                            | Default                  | Required For |
+| ---------------------------------- | -------------------------------------- | ------------------------ | ------------ |
+| `LLM_PROVIDER`                     | LLM provider to use                    | `openai`                 | No           |
+| `AUTOBROWSE_LLM_MODEL`             | The LLM model to use                   | `gpt-4o-mini`            | No           |
+| `OPENAI_API_KEY`                   | OpenAI API key                         | -                        | OpenAI       |
+| `GOOGLE_API_KEY`                   | Google AI API key                      | -                        | Google AI    |
+| `AZURE_OPENAI_API_KEY`             | Azure OpenAI API key                   | -                        | Azure        |
+| `AZURE_OPENAI_ENDPOINT`            | Azure OpenAI endpoint URL              | -                        | Azure        |
+| `AZURE_OPENAI_API_VERSION`         | Azure OpenAI API version               | `2024-12-01-preview`     | Azure        |
+| `AZURE_OPENAI_API_DEPLOYMENT_NAME` | Azure OpenAI deployment name           | -                        | Azure        |
+| `ANTHROPIC_API_KEY`                | Anthropic API key                      | -                        | Anthropic    |
+| `GOOGLE_APPLICATION_CREDENTIALS`   | Path to Google Vertex credentials file | -                        | Vertex AI    |
+| `BASE_URL`                         | Ollama API endpoint                    | `http://localhost:11434` | No           |
 
 ## Supported LLM Providers
 
-Currently supported:
+Auto Browse supports multiple LLM providers:
 
-- OpenAI (gpt-4o-mini and compatible models)
-- Google AI (Gemini models)
-
-Coming soon:
-
-- Anthropic Claude
-- Local LLMs
-- Meta Llama
+- OpenAI (default) - GPT-4 and compatible models
+- Google AI - Gemini models
+- Azure OpenAI - GPT models on Azure
+- Anthropic - Claude models
+- Google Vertex AI - PaLM and Gemini models
+- Ollama - Run models locally
 
 ## Usage
 
