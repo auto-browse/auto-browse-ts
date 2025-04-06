@@ -1,6 +1,6 @@
 {
   "name": "@auto-browse/auto-browse",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "AI-powered browser automation",
   "author": "auto-browse",
   "homepage": "https://www.auto-browse.com/",
@@ -20,7 +20,11 @@
     "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\"",
-    "postinstall": "playwright install --with-deps"
+    "postinstall": "playwright install --with-deps",
+    "clean": "rm -rf dist playwright-report test-results",
+    "check": "npm run format && npm run lint",
+    "prepublishOnly": "npm run clean && npm run build && npm run format && npm run lint",
+    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public --provenance"
   },
   "keywords": [
     "playwright",
@@ -34,13 +38,18 @@
     "langchain",
     "openai",
     "chatgpt",
+    "google-ai",
+    "gemini",
     "auto-browse"
   ],
   "license": "MIT",
   "dependencies": {
+    "@langchain/anthropic": "^0.3.16",
     "@langchain/core": "^0.3.43",
     "@langchain/google-genai": "^0.2.1",
+    "@langchain/google-vertexai": "^0.2.3",
     "@langchain/langgraph": "^0.2.60",
+    "@langchain/ollama": "^0.2.0",
     "@langchain/openai": "^0.5.0",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "@playwright/test": "1.52.0-alpha-1743011787000",
