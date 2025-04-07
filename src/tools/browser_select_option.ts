@@ -25,31 +25,30 @@ const selectOptionSchema = z.object({
 
 export const browser_select_option = tool(
     async ({ element, ref, values }) => {
-        try
-        {
+        try {
             console.log(`[Select Option Tool] Starting operation:`, {
                 element,
                 ref,
                 values,
             });
-            const result = await test.step(`Select "${values}" in "${element}"`, async () => {
-                return await runAndWait(
-                    context,
-                    `Selected options in "${element}"`,
-                    async () => {
-                        const locator = context.refLocator(ref);
-                        await locator.selectOption(values);
-                    },
-                    true,
-                );
-            });
+            const result =
+                await test.step(`Select "${values}" in "${element}"`, async () => {
+                    return await runAndWait(
+                        context,
+                        `Selected options in "${element}"`,
+                        async () => {
+                            const locator = context.refLocator(ref);
+                            await locator.selectOption(values);
+                        },
+                        true,
+                    );
+                });
             console.log(
                 `[Select Option Tool] Operation completed with result:`,
                 result,
             );
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to select options: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Select Option Tool] Error:`, errorMessage);
             return errorMessage;

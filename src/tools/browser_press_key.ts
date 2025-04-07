@@ -17,8 +17,7 @@ const pressKeySchema = z.object({
 
 export const browser_press_key = tool(
     async ({ key }) => {
-        try
-        {
+        try {
             console.log(`[Press Key Tool] Starting operation:`, { key });
             const result = await test.step(`Press key ${key}`, async () => {
                 return await runAndWait(
@@ -32,8 +31,7 @@ export const browser_press_key = tool(
             });
             console.log(`[Press Key Tool] Operation completed`);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to press key: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Press Key Tool] Error:`, errorMessage);
             return errorMessage;

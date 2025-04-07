@@ -18,27 +18,26 @@ const hoverSchema = z.object({
 
 export const browser_hover = tool(
     async ({ element, ref }) => {
-        try
-        {
+        try {
             console.log(`[Hover Tool] Starting operation:`, { element, ref });
-            const result = await test.step(`Hover over "${element}"`, async () => {
-                return await runAndWait(
-                    context,
-                    `Hovered over "${element}"`,
-                    async () => {
-                        const locator = context.refLocator(ref);
-                        await locator.hover();
-                    },
-                    true,
-                );
-            });
+            const result =
+                await test.step(`Hover over "${element}"`, async () => {
+                    return await runAndWait(
+                        context,
+                        `Hovered over "${element}"`,
+                        async () => {
+                            const locator = context.refLocator(ref);
+                            await locator.hover();
+                        },
+                        true,
+                    );
+                });
             console.log(
                 `[Hover Tool] Operation completed with result:`,
                 result,
             );
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to hover: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Hover Tool] Error:`, errorMessage);
             return errorMessage;

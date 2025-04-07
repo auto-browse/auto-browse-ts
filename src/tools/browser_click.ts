@@ -18,8 +18,7 @@ const clickSchema = z.object({
 
 export const browser_click = tool(
     async ({ element, ref }) => {
-        try
-        {
+        try {
             console.log(`[Click Tool] Starting operation:`, { element, ref });
             const result = await test.step(`Click "${element}"`, async () => {
                 return await runAndWait(
@@ -32,10 +31,12 @@ export const browser_click = tool(
                     true,
                 );
             });
-            console.log(`[Click Tool] Operation completed with result:`, result);
+            console.log(
+                `[Click Tool] Operation completed with result:`,
+                result,
+            );
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to click: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Click Tool] Error:`, errorMessage);
             return errorMessage;

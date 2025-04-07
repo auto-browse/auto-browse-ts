@@ -17,8 +17,7 @@ const goBackSchema = z.object({
 
 export const browser_go_back = tool(
     async () => {
-        try
-        {
+        try {
             console.log(`[Go Back Tool] Starting operation`);
 
             const result = await test.step(`Go Back`, async () => {
@@ -34,8 +33,7 @@ export const browser_go_back = tool(
 
             console.log(`[Go Back Tool] Operation completed`);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to go back: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Go Back Tool] Error:`, errorMessage);
             return errorMessage;

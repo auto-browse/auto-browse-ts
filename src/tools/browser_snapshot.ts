@@ -16,16 +16,15 @@ const snapshotSchema = z.object({
 
 export const browser_snapshot = tool(
     async () => {
-        try
-        {
+        try {
             console.log(`[Aria Snapshot] Starting snapshot operation`);
-            const result = await test.step(`Capture Accessibility Snapshot`, async () => {
-                return await captureAriaSnapshot(context);
-            });
+            const result =
+                await test.step(`Capture Accessibility Snapshot`, async () => {
+                    return await captureAriaSnapshot(context);
+                });
             console.log(`[Aria Snapshot] Operation completed successfully`);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to capture snapshot: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Aria Snapshot] Error:`, errorMessage);
             return errorMessage;

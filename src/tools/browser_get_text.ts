@@ -18,33 +18,32 @@ const getTextSchema = z.object({
 
 export const browser_get_text = tool(
     async ({ element, ref }) => {
-        try
-        {
+        try {
             console.log(`[Get Text Tool] Starting operation:`, {
                 element,
                 ref,
             });
 
-            const result = await test.step(`Get text from "${element}"`, async () => {
-                return await runAndWait(
-                    context,
-                    `Got text from "${element}"`,
-                    async () => {
-                        const locator = context.refLocator(ref);
-                        const text = (await locator.innerText()) || '';
-                        return text;
-                    },
-                    false,
-                );
-            });
+            const result =
+                await test.step(`Get text from "${element}"`, async () => {
+                    return await runAndWait(
+                        context,
+                        `Got text from "${element}"`,
+                        async () => {
+                            const locator = context.refLocator(ref);
+                            const text = (await locator.innerText()) || '';
+                            return text;
+                        },
+                        false,
+                    );
+                });
 
             console.log(
                 `[Get Text Tool] Operation completed with result:`,
                 result,
             );
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to get text: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Get Text Tool] Error:`, errorMessage);
             return errorMessage;

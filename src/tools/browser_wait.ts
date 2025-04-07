@@ -10,15 +10,13 @@ const waitSchema = z.object({
 
 export const browser_wait = tool(
     async ({ time }) => {
-        try
-        {
+        try {
             console.log(`[Wait Tool] Starting operation:`, { time });
             // Cap wait time to 10 seconds like in common.ts
             const waitTime = Math.min(10000, time * 1000);
             await new Promise((f) => setTimeout(f, waitTime));
             return `Waited for ${time} seconds`;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to wait: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Wait Tool] Error:`, errorMessage);
             return errorMessage;

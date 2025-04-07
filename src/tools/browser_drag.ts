@@ -32,8 +32,7 @@ const dragSchema = z.object({
 
 export const browser_drag = tool(
     async ({ startElement, startRef, endElement, endRef }) => {
-        try
-        {
+        try {
             console.log(`[Drag Tool] Starting operation:`, {
                 startElement,
                 startRef,
@@ -41,23 +40,23 @@ export const browser_drag = tool(
                 endRef,
             });
 
-            const result = await test.step(`Drag "${startElement}" to "${endElement}"`, async () => {
-                return await runAndWait(
-                    context,
-                    `Dragged "${startElement}" to "${endElement}"`,
-                    async () => {
-                        const startLocator = context.refLocator(startRef);
-                        const endLocator = context.refLocator(endRef);
-                        await startLocator.dragTo(endLocator);
-                    },
-                    true,
-                );
-            });
+            const result =
+                await test.step(`Drag "${startElement}" to "${endElement}"`, async () => {
+                    return await runAndWait(
+                        context,
+                        `Dragged "${startElement}" to "${endElement}"`,
+                        async () => {
+                            const startLocator = context.refLocator(startRef);
+                            const endLocator = context.refLocator(endRef);
+                            await startLocator.dragTo(endLocator);
+                        },
+                        true,
+                    );
+                });
 
             console.log(`[Drag Tool] Operation completed with result:`, result);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to drag: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Drag Tool] Error:`, errorMessage);
             return errorMessage;

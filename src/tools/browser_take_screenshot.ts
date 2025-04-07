@@ -17,8 +17,7 @@ const screenshotSchema = z.object({
 
 export const browser_take_screenshot = tool(
     async ({ raw }) => {
-        try
-        {
+        try {
             console.log(`[Screenshot Tool] Starting operation:`, { raw });
 
             const page = context.existingPage();
@@ -45,8 +44,7 @@ export const browser_take_screenshot = tool(
 
             console.log(`[Screenshot Tool] Operation completed successfully`);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to take screenshot: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Screenshot Tool] Error:`, errorMessage);
             return errorMessage;

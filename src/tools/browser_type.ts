@@ -20,28 +20,31 @@ const typeSchema = z.object({
 
 export const browser_type = tool(
     async ({ element, ref, text, submit }) => {
-        try
-        {
-            console.log(`[Type Tool] Starting operation:`, { element, ref, text, submit });
-            const result = await test.step(`Fill "${text}" in "${element}"`, async () => {
-                return await runAndWait(
-                    context,
-                    `Typed "${text}" into "${element}"`,
-                    async () => {
-                        const locator = context.refLocator(ref);
-                        await locator.fill(text);
-                        if (submit)
-                        {
-                            await locator.press('Enter');
-                        }
-                    },
-                    true,
-                );
+        try {
+            console.log(`[Type Tool] Starting operation:`, {
+                element,
+                ref,
+                text,
+                submit,
             });
+            const result =
+                await test.step(`Fill "${text}" in "${element}"`, async () => {
+                    return await runAndWait(
+                        context,
+                        `Typed "${text}" into "${element}"`,
+                        async () => {
+                            const locator = context.refLocator(ref);
+                            await locator.fill(text);
+                            if (submit) {
+                                await locator.press('Enter');
+                            }
+                        },
+                        true,
+                    );
+                });
             console.log(`[Type Tool] Operation completed with result:`, result);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to type: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Type Tool] Error:`, errorMessage);
             return errorMessage;

@@ -17,8 +17,7 @@ const goForwardSchema = z.object({
 
 export const browser_go_forward = tool(
     async () => {
-        try
-        {
+        try {
             console.log(`[Go Forward Tool] Starting operation`);
 
             const result = await test.step(`Go Forward`, async () => {
@@ -34,8 +33,7 @@ export const browser_go_forward = tool(
 
             console.log(`[Go Forward Tool] Operation completed`);
             return result;
-        } catch (error)
-        {
+        } catch (error) {
             const errorMessage = `Failed to go forward: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Go Forward Tool] Error:`, errorMessage);
             return errorMessage;
