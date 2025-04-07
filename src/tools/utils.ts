@@ -18,93 +18,104 @@ import type * as playwright from 'playwright';
 import type { ToolResult } from './tool';
 import type { Context } from '../browser/context';
 
-async function waitForCompletion<R>(page: playwright.Page, callback: () => Promise<R>): Promise<R> {
-  const requests = new Set<playwright.Request>();
-  let frameNavigated = false;
-  let waitCallback: () => void = () => { };
-  const waitBarrier = new Promise<void>(f => { waitCallback = f; });
-
-  const requestListener = (request: playwright.Request) => requests.add(request);
-  const requestFinishedListener = (request: playwright.Request) => {
-    requests.delete(request);
-    if (!requests.size)
-      waitCallback();
-  };
-
-  const frameNavigateListener = (frame: playwright.Frame) => {
-    if (frame.parentFrame())
-      return;
-    frameNavigated = true;
-    dispose();
-    clearTimeout(timeout);
-    void frame.waitForLoadState('load').then(() => {
-      waitCallback();
+async function waitForCompletion<R>(
+    page: playwright.Page,
+    callback: () => Promise<R>,
+): Promise<R> {
+    const requests = new Set<playwright.Request>();
+    let frameNavigated = false;
+    let waitCallback: () => void = () => {};
+    const waitBarrier = new Promise<void>((f) => {
+        waitCallback = f;
     });
-  };
 
-  const onTimeout = () => {
-    dispose();
-    waitCallback();
-  };
+    const requestListener = (request: playwright.Request) =>
+        requests.add(request);
+    const requestFinishedListener = (request: playwright.Request) => {
+        requests.delete(request);
+        if (!requests.size) waitCallback();
+    };
 
-  page.on('request', requestListener);
-  page.on('requestfinished', requestFinishedListener);
-  page.on('framenavigated', frameNavigateListener);
-  const timeout = setTimeout(onTimeout, 10000);
+    const frameNavigateListener = (frame: playwright.Frame) => {
+        if (frame.parentFrame()) return;
+        frameNavigated = true;
+        dispose();
+        clearTimeout(timeout);
+        void frame.waitForLoadState('load').then(() => {
+            waitCallback();
+        });
+    };
 
-  const dispose = () => {
-    page.off('request', requestListener);
-    page.off('requestfinished', requestFinishedListener);
-    page.off('framenavigated', frameNavigateListener);
-    clearTimeout(timeout);
-  };
+    const onTimeout = () => {
+        dispose();
+        waitCallback();
+    };
 
-  try
-  {
-    const result = await callback();
-    if (!requests.size && !frameNavigated)
-      waitCallback();
-    await waitBarrier;
-    await page.evaluate(() => new Promise(f => setTimeout(f, 1000)));
+    page.on('request', requestListener);
+    page.on('requestfinished', requestFinishedListener);
+    page.on('framenavigated', frameNavigateListener);
+    const timeout = setTimeout(onTimeout, 10000);
+
+    const dispose = () => {
+        page.off('request', requestListener);
+        page.off('requestfinished', requestFinishedListener);
+        page.off('framenavigated', frameNavigateListener);
+        clearTimeout(timeout);
+    };
+
+    try {
+        const result = await callback();
+        if (!requests.size && !frameNavigated) waitCallback();
+        await waitBarrier;
+        await page.evaluate(() => new Promise((f) => setTimeout(f, 1000)));
+        return result;
+    } finally {
+        dispose();
+    }
+}
+
+export async function runAndWait(
+    context: Context,
+    status: string,
+    callback: (page: playwright.Page) => Promise<any>,
+    snapshot: boolean = false,
+): Promise<ToolResult> {
+    const page = context.existingPage();
+    const dismissFileChooser = context.hasFileChooser();
+    await waitForCompletion(page, () => callback(page));
+    if (dismissFileChooser) context.clearFileChooser();
+    const result: ToolResult = snapshot
+        ? await captureAriaSnapshot(context, status)
+        : {
+              content: [{ type: 'text', text: status }],
+          };
     return result;
-  } finally
-  {
-    dispose();
-  }
 }
 
-export async function runAndWait(context: Context, status: string, callback: (page: playwright.Page) => Promise<any>, snapshot: boolean = false): Promise<ToolResult> {
-  const page = context.existingPage();
-  const dismissFileChooser = context.hasFileChooser();
-  await waitForCompletion(page, () => callback(page));
-  if (dismissFileChooser)
-    context.clearFileChooser();
-  const result: ToolResult = snapshot ? await captureAriaSnapshot(context, status) : {
-    content: [{ type: 'text', text: status }],
-  };
-  return result;
-}
-
-export async function captureAriaSnapshot(context: Context, status: string = ''): Promise<ToolResult> {
-  const page = context.existingPage();
-  const lines = [];
-  if (status)
-    lines.push(`${status}`);
-  lines.push(
-    '',
-    `- Page URL: ${page.url()}`,
-    `- Page Title: ${await page.title()}`
-  );
-  if (context.hasFileChooser())
-    lines.push(`- There is a file chooser visible that requires browser_choose_file to be called`);
-  lines.push(
-    `- Page Snapshot`,
-    '```yaml',
-    await context.allFramesSnapshot(),
-    '```',
-    ''
-  );
-  return {
-    content: [{ type: 'text', text: lines.join('\n') }],
-  };
+export async function captureAriaSnapshot(
+    context: Context,
+    status: string = '',
+): Promise<ToolResult> {
+    const page = context.existingPage();
+    const lines = [];
+    if (status) lines.push(`${status}`);
+    lines.push(
+        '',
+        `- Page URL: ${page.url()}`,
+        `- Page Title: ${await page.title()}`,
+    );
+    if (context.hasFileChooser())
+        lines.push(
+            `- There is a file chooser visible that requires browser_choose_file to be called`,
+        );
+    lines.push(
+        `- Page Snapshot`,
+        '```yaml',
+        await context.allFramesSnapshot(),
+        '```',
+        '',
+    );
+    return {
+        content: [{ type: 'text', text: lines.join('\n') }],
+    };
 }

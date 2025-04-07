@@ -1,13 +1,11 @@
-import { tool } from "@langchain/core/tools";
+import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { test } from '@playwright/test';
 import { runAndWait } from './utils';
 import { context } from '../browser/context';
 
-/**
- * Schema for navigation with descriptions for the AI model
- */
 const navigateSchema = z.object({
-    url: z.string().describe('The URL to navigate to')
+    url: z.string().describe('The URL to navigate to'),
 });
 
 export const browser_navigate = tool(
@@ -15,20 +13,18 @@ export const browser_navigate = tool(
         try
         {
             console.log(`[Navigate Tool] Starting operation:`, { url });
-
-            const result = await runAndWait(
-                context,
-                `Navigated to "${url}"`,
-                async (page) => {
-                    console.log(`[Navigate Tool] Navigating to URL`);
-                    await page.goto(url, { waitUntil: 'domcontentloaded' });
-                    // Cap load event to 5 seconds, the page is operational at this point
-                    await page.waitForLoadState('load', { timeout: 5000 }).catch(() => { });
-                    console.log(`[Navigate Tool] Operation successful`);
-                },
-                true
-            );
-
+            const result = await test.step(`Go to "${url}"`, async () => {
+                return await runAndWait(
+                    context,
+                    `Navigated to "${url}"`,
+                    async (page) => {
+                        await page.goto(url, { waitUntil: 'domcontentloaded' });
+                        // Cap load event to 5 seconds, the page is operational at this point
+                        await page.waitForLoadState('load', { timeout: 5000 }).catch(() => { });
+                    },
+                    true,
+                );
+            });
             console.log(`[Navigate Tool] Operation completed`);
             return result;
         } catch (error)
@@ -39,8 +35,8 @@ export const browser_navigate = tool(
         }
     },
     {
-        name: "goto",
-        description: "Navigate to a URL using Playwright",
-        schema: navigateSchema
-    }
+        name: 'goto',
+        description: 'Navigate to a URL using Playwright',
+        schema: navigateSchema,
+    },
 );

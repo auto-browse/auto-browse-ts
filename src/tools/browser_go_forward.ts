@@ -1,5 +1,6 @@
-import { tool } from "@langchain/core/tools";
+import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { test } from '@playwright/test';
 import { runAndWait } from './utils';
 import { context } from '../browser/context';
 
@@ -8,7 +9,10 @@ import { context } from '../browser/context';
  * Includes dummy property to satisfy Gemini's API requirement for non-empty object properties
  */
 const goForwardSchema = z.object({
-    _: z.string().optional().describe('No parameters required for this operation')
+    _: z
+        .string()
+        .optional()
+        .describe('No parameters required for this operation'),
 });
 
 export const browser_go_forward = tool(
@@ -17,16 +21,16 @@ export const browser_go_forward = tool(
         {
             console.log(`[Go Forward Tool] Starting operation`);
 
-            const result = await runAndWait(
-                context,
-                'Navigated forward',
-                async (page) => {
-                    console.log(`[Go Forward Tool] Going forward to next page`);
-                    await page.goForward();
-                    console.log(`[Go Forward Tool] Operation successful`);
-                },
-                true
-            );
+            const result = await test.step(`Go Forward`, async () => {
+                return await runAndWait(
+                    context,
+                    'Navigated forward',
+                    async (page) => {
+                        await page.goForward();
+                    },
+                    true,
+                );
+            });
 
             console.log(`[Go Forward Tool] Operation completed`);
             return result;
@@ -38,8 +42,8 @@ export const browser_go_forward = tool(
         }
     },
     {
-        name: "goForward",
-        description: "Go forward to the next page",
-        schema: goForwardSchema
-    }
+        name: 'goForward',
+        description: 'Go forward to the next page',
+        schema: goForwardSchema,
+    },
 );

@@ -1,4 +1,4 @@
-import { tool } from "@langchain/core/tools";
+import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { context } from '../browser/context';
 import type * as playwright from 'playwright';
@@ -7,7 +7,12 @@ import type * as playwright from 'playwright';
  * Schema for taking screenshots with descriptions for the AI model
  */
 const screenshotSchema = z.object({
-    raw: z.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.')
+    raw: z
+        .boolean()
+        .optional()
+        .describe(
+            'Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.',
+        ),
 });
 
 export const browser_take_screenshot = tool(
@@ -21,16 +26,21 @@ export const browser_take_screenshot = tool(
                 ? { type: 'png', scale: 'css' }
                 : { type: 'jpeg', quality: 50, scale: 'css' };
 
-            console.log(`[Screenshot Tool] Taking screenshot with options:`, options);
+            console.log(
+                `[Screenshot Tool] Taking screenshot with options:`,
+                options,
+            );
             const screenshot = await page.screenshot(options);
             console.log(`[Screenshot Tool] Screenshot captured successfully`);
 
             const result = {
-                content: [{
-                    type: 'image',
-                    data: screenshot.toString('base64'),
-                    mimeType: raw ? 'image/png' : 'image/jpeg'
-                }],
+                content: [
+                    {
+                        type: 'image',
+                        data: screenshot.toString('base64'),
+                        mimeType: raw ? 'image/png' : 'image/jpeg',
+                    },
+                ],
             };
 
             console.log(`[Screenshot Tool] Operation completed successfully`);
@@ -43,8 +53,9 @@ export const browser_take_screenshot = tool(
         }
     },
     {
-        name: "screenshot",
-        description: "Take a screenshot of the current page. Note: Use browser_snapshot for actions, not this tool.",
-        schema: screenshotSchema
-    }
+        name: 'screenshot',
+        description:
+            'Take a screenshot of the current page. Note: Use browser_snapshot for actions, not this tool.',
+        schema: screenshotSchema,
+    },
 );
