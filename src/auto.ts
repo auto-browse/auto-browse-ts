@@ -1,14 +1,26 @@
 import { test as base } from '@playwright/test';
 import { AutoConfig } from './types';
 import { sessionManager, context } from './browser';
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { HumanMessage } from "@langchain/core/messages";
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { HumanMessage } from '@langchain/core/messages';
 import { createLLMModel } from './llm';
 import {
-    browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
-    browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
-    browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file,
-    browser_go_forward, browser_assert
+    browser_click,
+    browser_type,
+    browser_get_text,
+    browser_navigate,
+    browser_snapshot,
+    browser_hover,
+    browser_drag,
+    browser_select_option,
+    browser_take_screenshot,
+    browser_go_back,
+    browser_wait,
+    browser_press_key,
+    browser_save_pdf,
+    browser_choose_file,
+    browser_go_forward,
+    browser_assert,
 } from './tools';
 
 // Extend base test to automatically track page
@@ -16,15 +28,14 @@ export const test = base.extend({
     page: async ({ page }, use) => {
         sessionManager.setPage(page);
         await use(page);
-    }
+    },
 });
 
 // Initialize the LangChain agent with more detailed instructions
 const initializeAgent = () => {
     const model = createLLMModel();
 
-    const prompt =
-        `You are a web automation assistant. When given a natural language instruction:
+    const prompt = `You are a web automation assistant. When given a natural language instruction:
         - Always call the snapshot tool first to analyze the page structure and elements, so you can understand the context ad the elements available on the page to perform the requested action
         - For "get" or "get text" instructions, use the getText tool to retrieve content
         - For "click" instructions, use the click tool to interact with elements
@@ -46,32 +57,43 @@ const initializeAgent = () => {
     const agent = createReactAgent({
         llm: model,
         tools: [
-            browser_click, browser_type, browser_get_text, browser_navigate, browser_snapshot,
-            browser_hover, browser_drag, browser_select_option, browser_take_screenshot,
-            browser_go_back, browser_wait, browser_press_key, browser_save_pdf, browser_choose_file, browser_assert,
-            browser_go_forward
+            browser_click,
+            browser_type,
+            browser_get_text,
+            browser_navigate,
+            browser_snapshot,
+            browser_hover,
+            browser_drag,
+            browser_select_option,
+            browser_take_screenshot,
+            browser_go_back,
+            browser_wait,
+            browser_press_key,
+            browser_save_pdf,
+            browser_choose_file,
+            browser_assert,
+            browser_go_forward,
         ],
-        stateModifier: prompt
+        stateModifier: prompt,
     });
 
     return { agent };
 };
 
 // Main auto function that processes instructions
-export async function auto(instruction: string, config?: AutoConfig): Promise<any> {
+export async function auto(
+    instruction: string,
+    config?: AutoConfig,
+): Promise<any> {
     console.log(`[Auto] Processing instruction: "${instruction}"`);
 
-    if (config?.page)
-    {
+    if (config?.page) {
         sessionManager.setPage(config.page);
         console.log(`[Auto] Page set from config`);
-    } else
-    {
-        try
-        {
+    } else {
+        try {
             sessionManager.getPage();
-        } catch
-        {
+        } catch {
             // In standalone mode, create a new page
             console.log(`[Auto] No existing page, creating new page`);
             await context.createPage();
@@ -82,19 +104,17 @@ export async function auto(instruction: string, config?: AutoConfig): Promise<an
     console.log(`[Auto] Creating agent for instruction`);
     const { agent } = initializeAgent();
     const result = await agent.invoke({
-        messages: [new HumanMessage(instruction)]
+        messages: [new HumanMessage(instruction)],
     });
 
-    console.log("Agent result:", result);
+    console.log('Agent result:', result);
     // Process agent result
     const response = result.messages?.[-1]?.content;
     console.log(`[Auto] Agent response:`, response);
 
-    if (typeof response === 'string')
-    {
+    if (typeof response === 'string') {
         // If it's a success message, return null to match original behavior
-        if (response.startsWith('Successfully'))
-        {
+        if (response.startsWith('Successfully')) {
             console.log(`[Auto] Detected success message, returning null`);
             return null;
         }
