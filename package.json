@@ -21,10 +21,10 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\"",
     "postinstall": "playwright install --with-deps",
-    "clean": "rm -rf dist playwright-report test-results",
+    "clean": "rm -rf dist",
     "check": "npm run format && npm run lint",
     "prepublishOnly": "npm run clean && npm run build && npm run format && npm run lint",
-    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public --provenance"
+    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public"
   },
   "keywords": [
     "playwright",
