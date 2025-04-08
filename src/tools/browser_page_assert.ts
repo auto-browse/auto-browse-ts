@@ -74,8 +74,8 @@ export const browser_page_assert = tool(
             return result;
         } catch (error)
         {
-            const errorMessage = `Page assertion failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-            console.error(`[Page Assert Tool] Error:`, errorMessage);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`[Page Assert Tool] Error: ${errorMessage}`);
             return errorMessage;
         }
     },

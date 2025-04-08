@@ -149,7 +149,10 @@ export async function auto(
         if (validatedResponse.error)
         {
             console.log(`[Auto] Error: ${validatedResponse.error}`);
-            throw new Error(validatedResponse.error);
+            throw {
+                error: validatedResponse.error,
+                output: validatedResponse.output
+            };
         }
 
         // Return the output or null if successful with no output
