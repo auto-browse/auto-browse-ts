@@ -14,3 +14,4 @@ export { browser_save_pdf } from './browser_save_pdf';
 export { browser_choose_file } from './browser_choose_file';
 export { browser_assert } from './browser_assert';
 export { browser_go_forward } from './browser_go_forward';
+export { browser_page_assert } from './browser_page_assert';

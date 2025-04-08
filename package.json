@@ -1,6 +1,6 @@
 {
   "name": "@auto-browse/auto-browse",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "AI-powered browser automation",
   "author": "auto-browse",
   "homepage": "https://www.auto-browse.com/",
@@ -21,10 +21,10 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\"",
     "postinstall": "playwright install --with-deps",
-    "clean": "rm -rf dist playwright-report test-results",
+    "clean": "rm -rf dist",
     "check": "npm run format && npm run lint",
     "prepublishOnly": "npm run clean && npm run build && npm run format && npm run lint",
-    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public --provenance"
+    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public"
   },
   "keywords": [
     "playwright",
@@ -55,6 +55,7 @@
     "@playwright/test": "1.52.0-alpha-1743011787000",
     "dotenv": "^16.4.7",
     "playwright": "1.52.0-alpha-1743011787000",
+    "yaml": "^2.7.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
