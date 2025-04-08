@@ -179,13 +179,11 @@ class PageSnapshot {
             `- Page URL: ${page.url()}`,
             `- Page Title: ${await page.title()}`
         );
-        lines.push(
-            `- Page Snapshot`,
-            '```yaml',
-            yamlDocument.toString().trim(),
-            '```',
-            ''
-        );
+        lines.push(`- Page Snapshot`);
+        yamlDocument.toString().trim().split('\n').forEach(line => {
+            lines.push(`    ${line}`); // 4-space indentation
+        });
+        lines.push('');
         this._text = lines.join('\n');
     }
 

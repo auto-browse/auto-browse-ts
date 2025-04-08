@@ -1,8 +1,8 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { test, expect } from '@playwright/test';
 import { runAndWait } from './utils';
 import { context } from '../browser/context';
-import { expect } from '@playwright/test';
 
 /**
  * Schema for assertions with descriptions for the AI model
@@ -27,7 +27,8 @@ const assertSchema = z.object({
 
 export const browser_assert = tool(
     async ({ element, ref, assertion, expected }) => {
-        try {
+        try
+        {
             console.log(`[Assert Tool] Starting operation:`, {
                 element,
                 ref,
@@ -35,45 +36,57 @@ export const browser_assert = tool(
                 expected,
             });
 
-            const result = await runAndWait(
-                context,
-                `Asserted "${element}" ${assertion}${expected ? ` equals "${expected}"` : ''}`,
+            const result = await test.step(
+                `Assert "${element}" ${assertion}${expected ? ` equals "${expected}"` : ''}`,
                 async () => {
-                    const locator = context.refLocator(ref);
-                    console.log(`[Assert Tool] Performing assertion`);
+                    return await runAndWait(
+                        context,
+                        `Asserted "${element}" ${assertion}${expected ? ` equals "${expected}"` : ''}`,
+                        async () => {
+                            const locator = context.refLocator(ref);
+                            console.log(`[Assert Tool] Performing assertion`);
 
-                    switch (assertion.toLowerCase()) {
-                        case 'isvisible':
-                            await expect(locator).toBeVisible();
-                            return 'Element is visible';
-                        case 'hastext':
-                            if (!expected)
-                                throw new Error(
-                                    'Expected value required for hasText assertion',
-                                );
-                            await expect(locator).toHaveText(expected);
-                            return `Element has text "${expected}"`;
-                        case 'isenabled':
-                            await expect(locator).toBeEnabled();
-                            return 'Element is enabled';
-                        case 'ischecked':
-                            await expect(locator).toBeChecked();
-                            return 'Element is checked';
-                        default:
-                            throw new Error(
-                                `Unsupported assertion type: ${assertion}`,
-                            );
-                    }
+                            // Create descriptive message for both success and error cases
+                            const message = `${element} should ${assertion}${expected ? ` with text "${expected}"` : ''}`;
+
+                            switch (assertion.toLowerCase())
+                            {
+                                case 'isvisible':
+                                    await expect(locator, message).toBeVisible();
+                                    return message;
+                                case 'hastext':
+                                    if (!expected)
+                                        throw new Error(
+                                            'Expected value required for hasText assertion',
+                                        );
+                                    await expect(locator, message).toHaveText(expected);
+                                    return message;
+                                case 'isenabled':
+                                    await expect(locator, message).toBeEnabled();
+                                    return message;
+                                case 'ischecked':
+                                    await expect(locator, message).toBeChecked();
+                                    return message;
+                                default:
+                                    throw new Error(
+                                        `Unsupported assertion type: ${assertion}`,
+                                    );
+                            }
+                        },
+                        true,
+                    );
                 },
-                true,
             );
 
             console.log(`[Assert Tool] Operation completed`);
             return result;
-        } catch (error) {
+        } catch (error)
+        {
+            // Simple error handling using Playwright's built-in error messages
             const errorMessage = `Assertion failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
             console.error(`[Assert Tool] Error:`, errorMessage);
             return errorMessage;
+
         }
     },
     {

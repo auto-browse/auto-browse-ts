@@ -1,4 +1,5 @@
 import { test as base } from '@playwright/test';
+import { z } from "zod";
 import { AutoConfig } from './types';
 import { sessionManager, context } from './browser';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
@@ -21,7 +22,15 @@ import {
     browser_choose_file,
     browser_go_forward,
     browser_assert,
+    browser_page_assert,
 } from './tools';
+
+// Define response schema
+const AutoResponseSchema = z.object({
+    action: z.string().describe("The type of action performed (assert, click, type, etc)"),
+    error: z.string().describe("Error message if any, empty string if none"),
+    output: z.string().describe("Raw output from the action")
+});
 
 // Extend base test to automatically track page
 export const test = base.extend({
@@ -51,8 +60,15 @@ const initializeAgent = () => {
         - For pressing keys, use the pressKey tool
         - For saving PDFs, use the savePDF tool
         - For choosing files, use the chooseFile tool
-        - For verification and assertions, use the assert tool
-        Return the operation result or content as requested.`;
+        - While calling the verification and assertion tools, DO NOT assume or make up any expected values. Use the values as provided in the instruction only.
+        - For verification and assertions like {"isVisible", "hasText", "isEnabled", "isChecked"}, use the browser_assert tool
+        - For page assertions like {page title, current page url} use the browser_page_assert tools
+        Return a stringified JSON object with exactly these fields:
+            {
+                "action": "<type of action performed>",
+                "error": "<error message or empty string>",
+                "output": "<your output message>"
+            }`;
 
     const agent = createReactAgent({
         llm: model,
@@ -73,8 +89,18 @@ const initializeAgent = () => {
             browser_choose_file,
             browser_assert,
             browser_go_forward,
+            browser_page_assert,
         ],
         stateModifier: prompt,
+        responseFormat: {
+            prompt: `Return a stringified JSON object with exactly these fields:
+            {
+                "action": "<type of action performed>",
+                "error": "<error message or empty string>",
+                "output": "<your output message>"
+            }`,
+            schema: AutoResponseSchema
+        }
     });
 
     return { agent };
@@ -87,13 +113,17 @@ export async function auto(
 ): Promise<any> {
     console.log(`[Auto] Processing instruction: "${instruction}"`);
 
-    if (config?.page) {
+    if (config?.page)
+    {
         sessionManager.setPage(config.page);
         console.log(`[Auto] Page set from config`);
-    } else {
-        try {
+    } else
+    {
+        try
+        {
             sessionManager.getPage();
-        } catch {
+        } catch
+        {
             // In standalone mode, create a new page
             console.log(`[Auto] No existing page, creating new page`);
             await context.createPage();
@@ -107,14 +137,16 @@ export async function auto(
         messages: [new HumanMessage(instruction)],
     });
 
-    console.log('Agent result:', result);
+    //console.log('Agent result:', result);
     // Process agent result
     const response = result.messages?.[-1]?.content;
     console.log(`[Auto] Agent response:`, response);
 
-    if (typeof response === 'string') {
+    if (typeof response === 'string')
+    {
         // If it's a success message, return null to match original behavior
-        if (response.startsWith('Successfully')) {
+        if (response.startsWith('Successfully'))
+        {
             console.log(`[Auto] Detected success message, returning null`);
             return null;
         }
