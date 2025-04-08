@@ -47,7 +47,7 @@ export const browser_assert = tool(
                             console.log(`[Assert Tool] Performing assertion`);
 
                             // Create descriptive message for both success and error cases
-                            const message = `${element} should ${assertion}${expected ? ` with text "${expected}"` : ''}`;
+                            const message = `${element} ${assertion} ${expected || ''}`;
 
                             switch (assertion.toLowerCase())
                             {
@@ -82,9 +82,8 @@ export const browser_assert = tool(
             return result;
         } catch (error)
         {
-            // Simple error handling using Playwright's built-in error messages
-            const errorMessage = `Assertion failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-            console.error(`[Assert Tool] Error:`, errorMessage);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`[Assert Tool] Error: ${errorMessage}`);
             return errorMessage;
 
         }

@@ -37,7 +37,7 @@ export const browser_page_assert = tool(
                             console.log(`[Page Assert Tool] Performing assertion`);
 
                             // Create descriptive message for both success and error cases
-                            const message = `Page should ${assertion}${expected ? ` "${expected}"` : ''}`;
+                            const message = `${assertion} ${expected || ''}`;
 
                             switch (assertion.toLowerCase())
                             {
