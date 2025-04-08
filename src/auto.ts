@@ -149,6 +149,7 @@ export async function auto(
         if (validatedResponse.error)
         {
             console.log(`[Auto] Error: ${validatedResponse.error}`);
+            throw new Error(validatedResponse.error);
         }
 
         // Return the output or null if successful with no output
@@ -156,7 +157,7 @@ export async function auto(
     } catch (error)
     {
         console.log(`[Auto] Error processing response:`, error);
-        return null;
+        throw error;
     }
 }
 
