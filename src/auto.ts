@@ -133,29 +133,31 @@ export async function auto(
     // Create and invoke the agent
     console.log(`[Auto] Creating agent for instruction`);
     const { agent } = initializeAgent();
-    const result = await agent.invoke({
+    const response = await agent.invoke({
         messages: [new HumanMessage(instruction)],
     });
-
-    //console.log('Agent result:', result);
+    const result = response.structuredResponse;
     // Process agent result
-    const response = result.messages?.[-1]?.content;
-    console.log(`[Auto] Agent response:`, response);
-
-    if (typeof response === 'string')
+    try
     {
-        // If it's a success message, return null to match original behavior
-        if (response.startsWith('Successfully'))
-        {
-            console.log(`[Auto] Detected success message, returning null`);
-            return null;
-        }
-        console.log(`[Auto] Returning response string`);
-        return response;
-    }
+        console.log(`[Auto] Agent response:`, result);
 
-    console.log(`[Auto] No string response, returning null`);
-    return null;
+        // Parse and validate the response
+        const validatedResponse = AutoResponseSchema.parse(result);
+
+        console.log(`[Auto] Action: ${validatedResponse.action}`);
+        if (validatedResponse.error)
+        {
+            console.log(`[Auto] Error: ${validatedResponse.error}`);
+        }
+
+        // Return the output or null if successful with no output
+        return validatedResponse.output || null;
+    } catch (error)
+    {
+        console.log(`[Auto] Error processing response:`, error);
+        return null;
+    }
 }
 
 // Export everything needed for the package
