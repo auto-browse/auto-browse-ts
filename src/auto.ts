@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import { z } from 'zod';
 import { AutoConfig } from './types';
 import { sessionManager, context } from './browser';
+import { captureAutoCall, shutdown } from './analytics';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { HumanMessage } from '@langchain/core/messages';
 import { createLLMModel } from './llm';
@@ -317,6 +318,7 @@ export async function auto(
   config?: AutoConfig
 ): Promise<any> {
   console.log(`[Auto] Processing instruction: "${instruction}"`);
+  await captureAutoCall();
 
   if (config?.page)
   {
@@ -365,9 +367,15 @@ export async function auto(
   } catch (error)
   {
     console.log(`[Auto] Error processing response:`, error);
+
     throw error;
   }
 }
+
+// Ensure analytics are flushed before the process exits
+process.on('beforeExit', async () => {
+  await shutdown();
+});
 
 // Export everything needed for the package
 export { sessionManager } from './browser';
