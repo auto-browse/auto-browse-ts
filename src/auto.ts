@@ -1,30 +1,46 @@
 import { test as base } from '@playwright/test';
 import { z } from 'zod';
 import { AutoConfig } from './types';
-import { sessionManager, context } from './browser';
+import { context } from './context';
+import { sessionManager } from './session-manager';
 import { captureAutoCall, shutdown } from './analytics';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { HumanMessage } from '@langchain/core/messages';
 import { createLLMModel } from './llm';
-import {
-  browser_click,
-  browser_type,
-  browser_get_text,
-  browser_navigate,
-  browser_snapshot,
-  browser_hover,
-  browser_drag,
-  browser_select_option,
-  browser_take_screenshot,
-  browser_go_back,
-  browser_wait,
-  browser_press_key,
-  browser_save_pdf,
-  browser_choose_file,
-  browser_go_forward,
-  browser_assert,
-  browser_page_assert
-} from './tools';
+import { Tool } from "@langchain/core/tools";
+import snapshot from './tools/snapshot';
+import navigateTools from './tools/navigate';
+import assertTools from './tools/assert';
+import consoleTools from './tools/console';
+import dialogTools from './tools/dialogs';
+import fileTools from './tools/files';
+import keyboardTools from './tools/keyboard';
+import networkTools from './tools/network';
+import tabTools from './tools/tabs';
+import testingTools from './tools/testing';
+import waitTools from './tools/wait';
+import commonTools from './tools/common';
+
+import { createLangChainTool } from './tools/tool';
+
+
+// Convert our custom tools to LangChain tools
+const allTools = [
+    ...navigateTools(true),
+    ...snapshot,
+    ...assertTools,
+    ...consoleTools,
+    ...dialogTools(true),
+    ...fileTools(true),
+    ...keyboardTools(true),
+    ...networkTools,
+    ...tabTools(true),
+    ...testingTools,
+    ...waitTools(true),
+    ...commonTools(true)
+].map(customTool => createLangChainTool(customTool));
+const browserTools = [...allTools] as Tool[];
+//const browserTools = snapshot.map(createLangChainTool) as unknown as Tool[];
 
 // Define response schema
 const AutoResponseSchema = z.object({
@@ -274,25 +290,7 @@ Remember:
 - Distinguish between tool errors and application behavior
 - Maintain accurate state tracking`;
 
-  const all_tools = [
-    browser_click,
-    browser_type,
-    browser_get_text,
-    browser_navigate,
-    browser_snapshot,
-    browser_hover,
-    browser_drag,
-    browser_select_option,
-    browser_take_screenshot,
-    browser_go_back,
-    browser_wait,
-    browser_press_key,
-    browser_save_pdf,
-    browser_choose_file,
-    browser_assert,
-    browser_go_forward,
-    browser_page_assert
-  ];
+  const all_tools = browserTools;
   const agent = createReactAgent({
     //llm: model.bindTools(all_tools, { parallel_tool_calls: false }),
     llm: model,
@@ -378,5 +376,5 @@ process.on('beforeExit', async () => {
 });
 
 // Export everything needed for the package
-export { sessionManager } from './browser';
+export { sessionManager } from './session-manager';
 export * from './types';

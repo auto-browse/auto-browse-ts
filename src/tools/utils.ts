@@ -15,38 +15,29 @@
  */
 
 import type * as playwright from 'playwright';
-import type { ToolResult } from './tool';
-import type { Context } from '../browser/context';
-import yaml from 'yaml';
+import type { Context } from '../context';
+import type { Tab } from '../tab';
 
-type PageOrFrameLocator = playwright.Page | playwright.FrameLocator;
-
-async function waitForCompletion<R>(
-  page: playwright.Page,
-  callback: () => Promise<R>
-): Promise<R> {
+export async function waitForCompletion<R>(context: Context, tab: Tab, callback: () => Promise<R>): Promise<R> {
   const requests = new Set<playwright.Request>();
   let frameNavigated = false;
   let waitCallback: () => void = () => {};
-  const waitBarrier = new Promise<void>(f => {
-    waitCallback = f;
-  });
+  const waitBarrier = new Promise<void>(f => { waitCallback = f; });
 
-  const requestListener = (request: playwright.Request) =>
-    requests.add(request);
+  const requestListener = (request: playwright.Request) => requests.add(request);
   const requestFinishedListener = (request: playwright.Request) => {
     requests.delete(request);
-    if (!requests.size) waitCallback();
+    if (!requests.size)
+      waitCallback();
   };
 
   const frameNavigateListener = (frame: playwright.Frame) => {
-    if (frame.parentFrame()) return;
+    if (frame.parentFrame())
+      return;
     frameNavigated = true;
     dispose();
     clearTimeout(timeout);
-    void frame.waitForLoadState('load').then(() => {
-      waitCallback();
-    });
+    void tab.waitForLoadState('load').then(waitCallback);
   };
 
   const onTimeout = () => {
@@ -54,217 +45,48 @@ async function waitForCompletion<R>(
     waitCallback();
   };
 
-  page.on('request', requestListener);
-  page.on('requestfinished', requestFinishedListener);
-  page.on('framenavigated', frameNavigateListener);
+  tab.page.on('request', requestListener);
+  tab.page.on('requestfinished', requestFinishedListener);
+  tab.page.on('framenavigated', frameNavigateListener);
   const timeout = setTimeout(onTimeout, 10000);
 
   const dispose = () => {
-    page.off('request', requestListener);
-    page.off('requestfinished', requestFinishedListener);
-    page.off('framenavigated', frameNavigateListener);
+    tab.page.off('request', requestListener);
+    tab.page.off('requestfinished', requestFinishedListener);
+    tab.page.off('framenavigated', frameNavigateListener);
     clearTimeout(timeout);
   };
 
   try {
     const result = await callback();
-    if (!requests.size && !frameNavigated) waitCallback();
+    if (!requests.size && !frameNavigated)
+      waitCallback();
     await waitBarrier;
-    await page.evaluate(() => new Promise(f => setTimeout(f, 1000)));
+    await context.waitForTimeout(1000);
     return result;
   } finally {
     dispose();
   }
 }
 
-export async function run(
-  context: Context,
-  options: {
-    callback: (page: playwright.Page) => Promise<any>;
-    status?: string;
-    captureSnapshot?: boolean;
-    waitForCompletion?: boolean;
-    noClearFileChooser?: boolean;
-  }
-): Promise<ToolResult> {
-  const page = context.existingPage();
-  const dismissFileChooser =
-    !options.noClearFileChooser && context.hasFileChooser();
+export function sanitizeForFilePath(s: string) {
+  const sanitize = (s: string) => s.replace(/[\x00-\x2C\x2E-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]+/g, '-');
+  const separator = s.lastIndexOf('.');
+  if (separator === -1)
+    return sanitize(s);
+  return sanitize(s.substring(0, separator)) + '.' + sanitize(s.substring(separator + 1));
+}
 
+export async function generateLocator(locator: playwright.Locator): Promise<string> {
   try {
-    if (options.waitForCompletion) {
-      await waitForCompletion(page, () => options.callback(page));
-    } else {
-      await options.callback(page);
-    }
-  } finally {
-    if (dismissFileChooser) context.clearFileChooser();
-  }
-
-  const result: ToolResult = options.captureSnapshot
-    ? await captureAriaSnapshot(context, options.status)
-    : {
-        content: [{ type: 'text', text: options.status || '' }]
-      };
-  return result;
-}
-
-export async function runAndWait(
-  context: Context,
-  status: string,
-  callback: (page: playwright.Page) => Promise<any>,
-  snapshot: boolean = false
-): Promise<ToolResult> {
-  return run(context, {
-    callback,
-    status,
-    captureSnapshot: snapshot,
-    waitForCompletion: true
-  });
-}
-
-export async function runAndWaitWithSnapshot(
-  context: Context,
-  options: {
-    callback: (page: playwright.Page) => Promise<any>;
-    status?: string;
-    noClearFileChooser?: boolean;
-  }
-): Promise<ToolResult> {
-  return run(context, {
-    ...options,
-    captureSnapshot: true,
-    waitForCompletion: true
-  });
-}
-
-class PageSnapshot {
-  private _frameLocators: PageOrFrameLocator[] = [];
-  private _text!: string;
-
-  constructor() {}
-
-  static async create(page: playwright.Page): Promise<PageSnapshot> {
-    const snapshot = new PageSnapshot();
-    await snapshot._build(page);
-    return snapshot;
-  }
-
-  text(options?: { status?: string; hasFileChooser?: boolean }): string {
-    const results: string[] = [];
-    if (options?.status) {
-      results.push(options.status);
-      results.push('');
-    }
-    if (options?.hasFileChooser) {
-      results.push(
-        '- There is a file chooser visible that requires browser_choose_file to be called'
-      );
-      results.push('');
-    }
-    results.push(this._text);
-    return results.join('\n');
-  }
-
-  private async _build(page: playwright.Page) {
-    const yamlDocument = await this._snapshotFrame(page);
-    const lines = [];
-    lines.push(
-      `- Page URL: ${page.url()}`,
-      `- Page Title: ${await page.title()}`
-    );
-    lines.push(`- Page Snapshot`);
-    yamlDocument
-      .toString()
-      .trim()
-      .split('\n')
-      .forEach(line => {
-        lines.push(`    ${line}`); // 4-space indentation
-      });
-    lines.push('');
-    this._text = lines.join('\n');
-  }
-
-  private async _snapshotFrame(
-    frame: playwright.Page | playwright.FrameLocator
-  ) {
-    const frameIndex = this._frameLocators.push(frame) - 1;
-    const snapshotString = await frame
-      .locator('body')
-      .ariaSnapshot({ ref: true });
-    const snapshot = yaml.parseDocument(snapshotString);
-
-    const visit = async (node: any): Promise<unknown> => {
-      if (yaml.isPair(node)) {
-        await Promise.all([
-          visit(node.key).then(k => (node.key = k)),
-          visit(node.value).then(v => (node.value = v))
-        ]);
-      } else if (yaml.isSeq(node) || yaml.isMap(node)) {
-        node.items = await Promise.all(node.items.map(visit));
-      } else if (yaml.isScalar(node)) {
-        if (typeof node.value === 'string') {
-          const value = node.value;
-          if (frameIndex > 0)
-            node.value = value.replace('[ref=', `[ref=f${frameIndex}`);
-          if (value.startsWith('iframe ')) {
-            const ref = value.match(/\[ref=(.*)\]/)?.[1];
-            if (ref) {
-              try {
-                const childSnapshot = await this._snapshotFrame(
-                  frame.frameLocator(`aria-ref=${ref}`)
-                );
-                return snapshot.createPair(node.value, childSnapshot);
-              } catch (error) {
-                return snapshot.createPair(
-                  node.value,
-                  '<could not take iframe snapshot>'
-                );
-              }
-            }
-          }
-        }
-      }
-
-      return node;
-    };
-    await visit(snapshot.contents);
-    return snapshot;
-  }
-
-  refLocator(ref: string): playwright.Locator {
-    let frame = this._frameLocators[0];
-    const match = ref.match(/^f(\d+)(.*)/);
-    if (match) {
-      const frameIndex = parseInt(match[1], 10);
-      frame = this._frameLocators[frameIndex];
-      ref = match[2];
-    }
-
-    if (!frame)
-      throw new Error(
-        `Frame does not exist. Provide ref from the most current snapshot.`
-      );
-
-    return frame.locator(`aria-ref=${ref}`);
+    return await (locator as any)._generateLocatorString();
+  } catch (e) {
+    if (e instanceof Error && /locator._generateLocatorString: Timeout .* exceeded/.test(e.message))
+      throw new Error('Ref not found, likely because element was removed. Use browser_snapshot to see what elements are currently on the page.');
+    throw e;
   }
 }
 
-export async function captureAriaSnapshot(
-  context: Context,
-  status: string = ''
-): Promise<ToolResult> {
-  const page = context.existingPage();
-  const snapshot = await PageSnapshot.create(page);
-  return {
-    content: [
-      {
-        type: 'text',
-        text: snapshot.text({
-          status,
-          hasFileChooser: context.hasFileChooser()
-        })
-      }
-    ]
-  };
+export async function callOnPageNoTrace<T>(page: playwright.Page, callback: (page: playwright.Page) => Promise<T>): Promise<T> {
+  return await (page as any)._wrapApiCall(() => callback(page), { internal: true });
 }
