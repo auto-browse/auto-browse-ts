@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//import type { ImageContent, TextContent } from '@modelcontextprotocol/sdk/types.js';
+// import type { ImageContent, TextContent } from '@modelcontextprotocol/sdk/types.js';
 import type { z } from 'zod';
 import type {
   ImageContent,
@@ -78,18 +78,18 @@ export function defineTool<Input extends InputType>(tool: Tool<Input>): Tool<Inp
  * maintaining their original return type and functionality
  */
 export function createLangChainTool(baseTool: Tool<any>) {
-    const toolInstance = tool(
-        async (params) => {
-            const context = await Context.getInstance();
-            const parsedParams = baseTool.schema.inputSchema.parse(params);
-            const result = await context.run(baseTool, parsedParams);
-            return result;
-        },
-        {
-            name: baseTool.schema.name,
-            description: baseTool.schema.description,
-            schema: baseTool.schema.inputSchema
-        }
-    );
-    return toolInstance;
+  const toolInstance = tool(
+      async params => {
+        const context = await Context.getInstance();
+        const parsedParams = baseTool.schema.inputSchema.parse(params);
+        const result = await context.run(baseTool, parsedParams);
+        return result;
+      },
+      {
+        name: baseTool.schema.name,
+        description: baseTool.schema.description,
+        schema: baseTool.schema.inputSchema
+      }
+  );
+  return toolInstance;
 }

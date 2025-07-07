@@ -7,7 +7,7 @@ import { captureAutoCall, shutdown } from './analytics.js';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { HumanMessage } from '@langchain/core/messages';
 import { createLLMModel } from './llm.js';
-import { Tool } from "@langchain/core/tools";
+import { Tool } from '@langchain/core/tools';
 import snapshot from './tools/snapshot.js';
 import navigateTools from './tools/navigate.js';
 import assertTools from './tools/assert.js';
@@ -26,27 +26,27 @@ import { createLangChainTool } from './tools/tool.js';
 
 // Convert our custom tools to LangChain tools
 const allTools = [
-    ...navigateTools(true),
-    ...snapshot,
-    ...assertTools,
-    ...consoleTools,
-    ...dialogTools(true),
-    ...fileTools(true),
-    ...keyboardTools(true),
-    ...networkTools,
-    ...tabTools(true),
-    ...testingTools,
-    ...waitTools(true),
-    ...commonTools(true)
+  ...navigateTools(true),
+  ...snapshot,
+  ...assertTools,
+  ...consoleTools,
+  ...dialogTools(true),
+  ...fileTools(true),
+  ...keyboardTools(true),
+  ...networkTools,
+  ...tabTools(true),
+  ...testingTools,
+  ...waitTools(true),
+  ...commonTools(true)
 ].map(customTool => createLangChainTool(customTool));
 const browserTools = [...allTools] as Tool[];
-//const browserTools = snapshot.map(createLangChainTool) as unknown as Tool[];
+// const browserTools = snapshot.map(createLangChainTool) as unknown as Tool[];
 
 // Define response schema
 const AutoResponseSchema = z.object({
   action: z
-    .string()
-    .describe('The type of action performed (assert, click, type, etc)'),
+      .string()
+      .describe('The type of action performed (assert, click, type, etc)'),
   exception: z.string().describe('Error message if any, empty string if none'),
   output: z.string().describe('Raw output from the action')
 });
@@ -292,7 +292,7 @@ Remember:
 
   const all_tools = browserTools;
   const agent = createReactAgent({
-    //llm: model.bindTools(all_tools, { parallel_tool_calls: false }),
+    // llm: model.bindTools(all_tools, { parallel_tool_calls: false }),
     llm: model,
     tools: all_tools,
     stateModifier: prompt,
@@ -318,17 +318,13 @@ export async function auto(
   console.log(`[Auto] Processing instruction: "${instruction}"`);
   await captureAutoCall();
 
-  if (config?.page)
-  {
+  if (config?.page) {
     sessionManager.setPage(config.page);
     console.log(`[Auto] Page set from config`);
-  } else
-  {
-    try
-    {
+  } else {
+    try {
       sessionManager.getPage();
-    } catch
-    {
+    } catch {
       // In standalone mode, create a new page
       console.log(`[Auto] No existing page, creating new page`);
       await context.createPage();
@@ -343,16 +339,14 @@ export async function auto(
   });
   const result = response.structuredResponse;
   // Process agent result
-  try
-  {
+  try {
     console.log(`[Auto] Agent response:`, result);
 
     // Parse and validate the response
     const validatedResponse = AutoResponseSchema.parse(result);
 
     console.log(`[Auto] Action: ${validatedResponse.action}`);
-    if (validatedResponse.exception && validatedResponse.exception !== 'None' && validatedResponse.exception !== '' && validatedResponse.exception !== 'null' && validatedResponse.exception !== 'NA')
-    {
+    if (validatedResponse.exception && validatedResponse.exception !== 'None' && validatedResponse.exception !== '' && validatedResponse.exception !== 'null' && validatedResponse.exception !== 'NA') {
       console.log(`[Auto] Error: ${validatedResponse.exception}`);
       throw {
         error: validatedResponse.exception,
@@ -362,8 +356,7 @@ export async function auto(
 
     // Return the output or null if successful with no output
     return validatedResponse.output || null;
-  } catch (error)
-  {
+  } catch (error) {
     console.log(`[Auto] Error processing response:`, error);
 
     throw error;

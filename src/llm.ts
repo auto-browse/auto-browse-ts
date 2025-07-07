@@ -16,15 +16,13 @@ export function createLLMModel() {
   const provider = process.env.LLM_PROVIDER || 'openai';
   const model = process.env.AUTOBROWSE_LLM_MODEL || 'gpt-4o-mini';
 
-  if (provider === 'google')
-  {
+  if (provider === 'google') {
     return new ChatGoogleGenerativeAI({
       model: model
     });
   }
 
-  if (provider === 'azure')
-  {
+  if (provider === 'azure') {
     return new AzureChatOpenAI({
       temperature: 0,
       maxRetries: 2,
@@ -36,8 +34,7 @@ export function createLLMModel() {
     });
   }
 
-  if (provider === 'anthropic')
-  {
+  if (provider === 'anthropic') {
     return new ChatAnthropic({
       model: model,
       temperature: 0,
@@ -45,15 +42,13 @@ export function createLLMModel() {
     });
   }
 
-  if (provider === 'vertex')
-  {
+  if (provider === 'vertex') {
     return new ChatVertexAI({
       model: model,
       temperature: 0
     });
   }
-  if (provider === 'ollama')
-  {
+  if (provider === 'ollama') {
     return new ChatOllama({
       model: model,
       temperature: 0,

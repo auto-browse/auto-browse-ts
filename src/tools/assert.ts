@@ -105,9 +105,9 @@ const elementAssert = defineTool({
         break;
 
       case 'hasText':
-        if (!params.expected) {
+        if (!params.expected)
           throw new Error('Expected text value is required for hasText assertion');
-        }
+
         code.push(`// Assert ${params.element} has text "${params.expected}"`);
         code.push(`await expect(page.locator('aria-ref=${params.ref}')).toHaveText(${javascript.quote(params.expected)});`);
         action = async () => {
@@ -165,9 +165,9 @@ const responseAssert = defineTool({
 
     // Get the most recent response
     const responses = Array.from(requests.values()).filter(response => response !== null);
-    if (responses.length === 0) {
+    if (responses.length === 0)
       throw new Error('No responses available for assertion');
-    }
+
 
     const lastResponse = responses[responses.length - 1]!;
 
@@ -184,9 +184,9 @@ const responseAssert = defineTool({
         break;
 
       case 'hasStatus':
-        if (!params.expected) {
+        if (!params.expected)
           throw new Error('Expected status code is required for hasStatus assertion');
-        }
+
         code.push(`// Assert response has status ${params.expected}`);
         code.push(`expect(response.status()).toBe(${params.expected});`);
         action = async () => {

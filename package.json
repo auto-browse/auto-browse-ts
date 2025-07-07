@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/auto-browse/auto-browse-ts/issues"
   },
-  "documentation": "https://typescript.docs.auto-browse.com/introduction",
+  "documentation": "https://typescript.docs.auto-browse.com/quickstart",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -20,12 +20,12 @@
     "test": "playwright test",
     "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint . --fix && tsc --noEmit",
     "postinstall": "playwright install --with-deps",
     "clean": "rm -rf dist",
     "check": "npm run format && npm run lint",
-    "prepublishOnly": "npm run clean && npm run build && npm run format && npm run lint",
-    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public"
+    "prepublishOnly": "npm run clean && npm run build && npm run lint",
+    "publish-package": "npm run clean && npm run build && npm run lint && npm publish --access public"
   },
   "keywords": [
     "playwright",
@@ -65,14 +65,17 @@
     "zod-to-json-schema": "^3.24.4"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^3.1.0",
     "@types/chrome": "^0.0.315",
     "@types/debug": "^4.1.12",
     "@types/dotenv": "^6.1.1",
     "@types/node": "^20.0.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "eslint": "^9.19.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-notice": "^1.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.8.2"
   },

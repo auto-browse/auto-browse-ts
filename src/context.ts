@@ -58,9 +58,9 @@ export class Context {
   }
 
   static getInstance(tools?: Tool[], config?: FullConfig): Context {
-    if (!Context.instance) {
+    if (!Context.instance)
       Context.instance = new Context(tools, config);
-    }
+
     return Context.instance;
   }
 
@@ -385,9 +385,9 @@ ${code.join('\n')}
     const tab = this.currentTabOrDie();
     const page = tab.page;
     const visibleFrames = await page
-      .locator('iframe')
-      .filter({ visible: true })
-      .all();
+        .locator('iframe')
+        .filter({ visible: true })
+        .all();
     const lastSnapshotFrames = visibleFrames.map(frame => frame.contentFrame());
 
     const snapshots = await Promise.all([
@@ -398,9 +398,11 @@ ${code.join('\n')}
         });
         const args = [];
         const src = await frame.owner().getAttribute('src');
-        if (src) args.push(`src=${src}`);
+        if (src)
+          args.push(`src=${src}`);
         const name = await frame.owner().getAttribute('name');
-        if (name) args.push(`name=${name}`);
+        if (name)
+          args.push(`name=${name}`);
         return (
           `\n# iframe ${args.join(' ')}\n` +
           snapshot.replaceAll('[ref=', `[ref=f${index}`)
@@ -435,18 +437,18 @@ ${code.join('\n')}
     try {
       return sessionManager.getPage();
     } catch {
-      if (this._currentTab) {
+      if (this._currentTab)
         return this._currentTab.page;
-      }
+
       throw new Error('No page available');
     }
   }
 
   async submitFileChooser(paths: string[]) {
     const fileChooserState = this._modalStates.find(state => state.type === 'fileChooser') as any;
-    if (!fileChooserState) {
+    if (!fileChooserState)
       throw new Error('No file chooser visible');
-    }
+
     await fileChooserState.fileChooser.setFiles(paths);
     this.clearModalState(fileChooserState);
   }
