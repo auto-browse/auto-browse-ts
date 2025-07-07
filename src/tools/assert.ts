@@ -15,9 +15,9 @@
  */
 
 import { z } from 'zod';
-import { defineTool } from './tool';
+import { defineTool } from './tool.js';
 import { expect } from '@playwright/test';
-import * as javascript from '../javascript';
+import * as javascript from '../javascript.js';
 
 const pageAssertSchema = z.object({
   assertion: z.enum(['hasTitle', 'hasURL']).describe('Type of page assertion to perform'),

@@ -2,6 +2,7 @@
   "name": "@auto-browse/auto-browse",
   "version": "0.1.6",
   "description": "AI-powered browser automation",
+  "type": "module",
   "author": "auto-browse",
   "homepage": "https://www.auto-browse.com/",
   "repository": {

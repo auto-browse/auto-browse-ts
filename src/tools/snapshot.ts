@@ -16,9 +16,9 @@
 
 import { z } from 'zod';
 
-import { defineTool } from './tool';
-import * as javascript from '../javascript';
-import { generateLocator } from './utils';
+import { defineTool } from './tool.js';
+import * as javascript from '../javascript.js';
+import { generateLocator } from './utils.js';
 
 const snapshot = defineTool({
   capability: 'core',

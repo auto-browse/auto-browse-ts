@@ -1,2 +1,2 @@
-export { auto, test } from './auto';
-export * from './types';
+export { auto, test } from './auto.js';
+export * from './types.js';

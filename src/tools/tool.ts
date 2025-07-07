@@ -19,11 +19,11 @@ import type { z } from 'zod';
 import type {
   ImageContent,
   TextContent
-} from '@modelcontextprotocol/sdk/types';
+} from '@modelcontextprotocol/sdk/types.js';
 import { tool } from '@langchain/core/tools';
-import { Context } from '../context';
+import { Context } from '../context.js';
 import type * as playwright from 'playwright';
-import type { ToolCapability } from '../../config';
+import type { ToolCapability } from '../../config.js';
 
 export type ToolSchema<Input extends InputType> = {
   name: string;

@@ -1,5 +1,5 @@
 import { PostHog } from 'posthog-node';
-import { analyticsProvider, analyticsModel } from './llm';
+import { analyticsProvider, analyticsModel } from './llm.js';
 
 const ANALYTICS_OPT_IN = process.env.ANALYTICS_OPT_IN !== 'false'; // defaults to true
 

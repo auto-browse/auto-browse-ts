@@ -15,7 +15,7 @@
  */
 
 import { z } from 'zod';
-import { defineTool, type ToolFactory } from './tool';
+import { defineTool, type ToolFactory } from './tool.js';
 
 const close = defineTool({
   capability: 'core',

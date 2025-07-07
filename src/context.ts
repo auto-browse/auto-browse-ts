@@ -17,17 +17,17 @@
 import debug from 'debug';
 import * as playwright from 'playwright';
 
-import { callOnPageNoTrace, waitForCompletion } from './tools/utils';
-import { ManualPromise } from './manualPromise';
-import { Tab } from './tab';
-import { outputFile, defaultConfig } from './config';
-import { sessionManager } from './session-manager';
-import { createSessionManagerContextFactory } from './browserContextFactory';
+import { callOnPageNoTrace, waitForCompletion } from './tools/utils.js';
+import { ManualPromise } from './manualPromise.js';
+import { Tab } from './tab.js';
+import { outputFile, defaultConfig } from './config.js';
+import { sessionManager } from './session-manager.js';
+import { createSessionManagerContextFactory } from './browserContextFactory.js';
 
-import type { ImageContent, TextContent } from '@modelcontextprotocol/sdk/types';
-import type { ModalState, Tool, ToolActionResult } from './tools/tool';
-import type { FullConfig } from './config';
-import type { BrowserContextFactory } from './browserContextFactory';
+import type { ImageContent, TextContent } from '@modelcontextprotocol/sdk/types.js';
+import type { ModalState, Tool, ToolActionResult } from './tools/tool.js';
+import type { FullConfig } from './config.js';
+import type { BrowserContextFactory } from './browserContextFactory.js';
 
 type PendingAction = {
   dialogShown: ManualPromise<void>;

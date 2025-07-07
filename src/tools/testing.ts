@@ -15,7 +15,7 @@
  */
 
 import { z } from 'zod';
-import { defineTool } from './tool';
+import { defineTool } from './tool.js';
 
 const generateTestSchema = z.object({
   name: z.string().describe('The name of the test'),

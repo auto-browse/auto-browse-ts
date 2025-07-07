@@ -16,10 +16,10 @@
 
 import * as playwright from 'playwright';
 
-import { PageSnapshot } from './pageSnapshot';
+import { PageSnapshot } from './pageSnapshot.js';
 
-import type { Context } from './context';
-import { callOnPageNoTrace } from './tools/utils';
+import type { Context } from './context.js';
+import { callOnPageNoTrace } from './tools/utils.js';
 
 export class Tab {
   readonly context: Context;

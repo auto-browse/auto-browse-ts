@@ -1,27 +1,27 @@
 import { test as base } from '@playwright/test';
 import { z } from 'zod';
-import { AutoConfig } from './types';
-import { context } from './context';
-import { sessionManager } from './session-manager';
-import { captureAutoCall, shutdown } from './analytics';
+import { AutoConfig } from './types.js';
+import { context } from './context.js';
+import { sessionManager } from './session-manager.js';
+import { captureAutoCall, shutdown } from './analytics.js';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { HumanMessage } from '@langchain/core/messages';
-import { createLLMModel } from './llm';
+import { createLLMModel } from './llm.js';
 import { Tool } from "@langchain/core/tools";
-import snapshot from './tools/snapshot';
-import navigateTools from './tools/navigate';
-import assertTools from './tools/assert';
-import consoleTools from './tools/console';
-import dialogTools from './tools/dialogs';
-import fileTools from './tools/files';
-import keyboardTools from './tools/keyboard';
-import networkTools from './tools/network';
-import tabTools from './tools/tabs';
-import testingTools from './tools/testing';
-import waitTools from './tools/wait';
-import commonTools from './tools/common';
+import snapshot from './tools/snapshot.js';
+import navigateTools from './tools/navigate.js';
+import assertTools from './tools/assert.js';
+import consoleTools from './tools/console.js';
+import dialogTools from './tools/dialogs.js';
+import fileTools from './tools/files.js';
+import keyboardTools from './tools/keyboard.js';
+import networkTools from './tools/network.js';
+import tabTools from './tools/tabs.js';
+import testingTools from './tools/testing.js';
+import waitTools from './tools/wait.js';
+import commonTools from './tools/common.js';
 
-import { createLangChainTool } from './tools/tool';
+import { createLangChainTool } from './tools/tool.js';
 
 
 // Convert our custom tools to LangChain tools
@@ -376,5 +376,5 @@ process.on('beforeExit', async () => {
 });
 
 // Export everything needed for the package
-export { sessionManager } from './session-manager';
-export * from './types';
+export { sessionManager } from './session-manager.js';
+export * from './types.js';

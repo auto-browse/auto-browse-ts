@@ -15,7 +15,7 @@
  */
 
 import * as playwright from 'playwright';
-import { callOnPageNoTrace } from './tools/utils';
+import { callOnPageNoTrace } from './tools/utils.js';
 
 type PageEx = playwright.Page & {
   _snapshotForAI: () => Promise<string>;

@@ -4,7 +4,7 @@
  */
 
 import * as playwright from 'playwright';
-import { sessionManager } from './session-manager';
+import { sessionManager } from './session-manager.js';
 
 export interface BrowserContextFactory {
   createContext(): Promise<{ browserContext: playwright.BrowserContext, close: () => Promise<void> }>;
