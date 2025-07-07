@@ -8,9 +8,9 @@ class SessionManager {
   private constructor() {}
 
   static getInstance(): SessionManager {
-    if (!SessionManager.instance) {
+    if (!SessionManager.instance)
       SessionManager.instance = new SessionManager();
-    }
+
     return SessionManager.instance;
   }
 
@@ -25,7 +25,7 @@ class SessionManager {
   getPage(): Page {
     if (!this.currentPage) {
       throw new Error(
-        'No active page found. Make sure you are running within a Playwright test.'
+          'No active page found. Make sure you are running within a Playwright test.'
       );
     }
     return this.currentPage;
@@ -34,7 +34,7 @@ class SessionManager {
   getContext(): BrowserContext {
     if (!this.currentContext) {
       throw new Error(
-        'No active browser context found. Make sure you are running within a Playwright test.'
+          'No active browser context found. Make sure you are running within a Playwright test.'
       );
     }
     return this.currentContext;

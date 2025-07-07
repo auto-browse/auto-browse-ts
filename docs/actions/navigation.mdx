@@ -22,9 +22,9 @@ await auto("go to the home page");
 await auto("go to /products");
 ```
 
-## Page Navigation
+## Common Use Cases
 
-### Direct Navigation
+**Page Navigation and Browser Controls**
 
 ```typescript
 // Navigate to specific pages
@@ -32,198 +32,22 @@ await auto("go to the login page");
 await auto("navigate to the about page");
 await auto("visit the contact page");
 
-// Navigate with context
-await auto("go to the settings page in account section");
-await auto("navigate to the first product's details page");
-```
-
-### Browser Controls
-
-```typescript
 // Browser history navigation
 await auto("go back");
 await auto("go forward");
 await auto("refresh the page");
 
-// Multiple steps
-await auto("go back 2 pages");
-await auto("go forward one page");
+// Navigate with context
+await auto("go to the settings page in account section");
+await auto("navigate to the first product's details page");
 ```
 
-## Advanced Navigation
+## Key Features
 
-### URL Parameters
-
-Handle URLs with parameters:
-
-```typescript
-// Navigate with query parameters
-await auto("go to /search?q=example");
-
-// Navigate with path parameters
-await auto("go to /users/123/profile");
-
-// Complex URLs
-await auto("go to /products?category=electronics&sort=price");
-```
-
-### State Handling
-
-Manage navigation state:
-
-```typescript
-// Wait for navigation
-await auto("wait until navigation is complete");
-
-// Verify current location
-await auto("verify we are on the home page");
-await auto("confirm URL contains /dashboard");
-
-// Handle redirects
-await auto("follow redirect if present");
-```
-
-## Common Patterns
-
-### 1. Authentication Flows
-
-```typescript
-async function authFlow() {
-	await auto("go to the login page");
-	await auto('type "user@example.com" in email');
-	await auto('type "password123" in password');
-	await auto("click login");
-	await auto("verify redirect to dashboard");
-}
-```
-
-### 2. Multi-step Processes
-
-```typescript
-async function checkoutFlow() {
-	await auto("go to shopping cart");
-	await auto("proceed to checkout");
-	await auto("navigate to payment page");
-	await auto("verify on confirmation page");
-}
-```
-
-### 3. Application Routes
-
-```typescript
-async function routeNavigation() {
-	await auto("go to main dashboard");
-	await auto("open user settings");
-	await auto("navigate to security section");
-	await auto("return to dashboard");
-}
-```
-
-## Best Practices
-
-### 1. Use Clear Destinations
-
-```typescript
-// Good - Clear destination
-await auto("go to the product catalog");
-
-// Less Clear - Ambiguous
-await auto("go to products");
-```
-
-### 2. Wait for Navigation
-
-```typescript
-// Good - Ensures navigation is complete
-await auto("go to dashboard and wait for load");
-
-// Better - With verification
-await auto("go to dashboard and verify page title");
-```
-
-### 3. Handle Dynamic Routes
-
-```typescript
-// Good - Handles dynamic content
-await auto("wait for URL to contain /dashboard");
-await auto("verify dashboard elements are visible");
-```
-
-## Error Handling
-
-Handle common navigation scenarios:
-
-```typescript
-try {
-	await auto("go to restricted page");
-} catch (error) {
-	if (error.message.includes("unauthorized")) {
-		// Handle authentication first
-		await auto("go to login page");
-		await auto("complete login process");
-		await auto("go to restricted page");
-	}
-}
-```
-
-## Troubleshooting
-
-Common navigation issues and solutions:
-
-1. **Page Load Issues**
-
-```typescript
-// Ensure page loads completely
-await auto("go to page and wait for network idle");
-await auto("verify page load is complete");
-```
-
-2. **Redirect Loops**
-
-```typescript
-// Handle multiple redirects
-await auto("follow redirects until final page");
-await auto("verify final destination");
-```
-
-3. **Authentication Required**
-
-```typescript
-// Check and handle auth state
-await auto("verify login status");
-await auto("complete authentication if needed");
-await auto("proceed to requested page");
-```
-
-## URL Patterns
-
-### Handling Different URL Types
-
-```typescript
-// Absolute URLs
-await auto("go to https://example.com/page");
-
-// Relative URLs
-await auto("navigate to /section/page");
-
-// URL with fragments
-await auto("go to /docs#section-1");
-
-// Complex query parameters
-await auto("go to /search?q=test&filters=active");
-```
-
-### Dynamic URLs
-
-```typescript
-// Template URLs
-await auto("go to user profile number 123");
-await auto("open order with ID ABC123");
-
-// Query parameters
-await auto("go to search results for 'example'");
-await auto("navigate to filtered view with status=active");
-```
+- **Multiple Navigation Types**: Direct URLs, page names, and relative paths
+- **Browser Controls**: Back, forward, refresh, and history navigation
+- **State Management**: Automatic waiting for navigation completion
+- **Context Awareness**: Navigate within specific sections or areas
 
 ## Next Steps
 

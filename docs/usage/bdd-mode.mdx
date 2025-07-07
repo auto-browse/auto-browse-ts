@@ -9,27 +9,6 @@ Auto-Browse seamlessly integrates with [playwright-bdd](https://github.com/vital
 
 ## Setup
 
-### ⚠️ Important: Playwright Version Requirements
-
-When using Auto Browse with playwright-bdd, you must use specific Playwright versions for compatibility:
-
-```bash
-"@playwright/test": "1.52.0-alpha-1743011787000"
-"playwright": "1.52.0-alpha-1743011787000"
-```
-
-To handle version conflicts:
-
-1. Remove any existing Playwright installations
-2. Clear npm cache if needed: `npm cache clean --force`
-3. Install dependencies with the legacy flag:
-
-```bash
-npm install --legacy-peer-deps
-```
-
-> 🔄 Future releases will support a wider range of Playwright versions.
-
 ### Installation
 
 1. Install required dependencies:
@@ -108,7 +87,7 @@ Feature: User Login
 
 ```typescript
 import { auto } from "@auto-browse/auto-browse";
-import { Given, When aistep, Then } from "./fixtures";
+import { Given, When as aistep, Then } from "./fixtures";
 
 // Generic step that handles any natural language action
 aistep(/^(.*)$/, async ({ page }, action: string) => {
@@ -116,11 +95,8 @@ aistep(/^(.*)$/, async ({ page }, action: string) => {
 });
 ```
 
-```
-
 ## Next Steps
 
 - Learn about [Standalone Mode](/usage/standalone-mode)
 - Explore [Test Mode](/usage/playwright-test-mode)
 - Check out [Supported Actions](/actions/clicking)
-```

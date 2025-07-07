@@ -20,222 +20,34 @@ await auto('type "john@example.com" in the email field');
 await auto("click the submit button");
 ```
 
-## Form Elements
+## Common Use Cases
 
-### Text Inputs
-
-```typescript
-// Regular text input
-await auto('type "My Title" in the title field');
-
-// Required fields
-await auto('fill required field "username" with "johndoe"');
-
-// Placeholder-based targeting
-await auto('type "Search..." in field with placeholder "Enter search terms"');
-```
-
-### Select Dropdowns
+**Form Fields and Elements**
 
 ```typescript
-// Simple select
+// Text inputs
+await auto('type "John Doe" in the name field');
+await auto('type "john@example.com" in the email field');
+
+// Select dropdowns
 await auto('select "United States" from country dropdown');
-
-// Option groups
 await auto('select "Pacific Time" from timezone group "North America"');
 
-// Multiple select
-await auto('select options "Red, Blue, Green" from colors list');
-```
-
-### Checkboxes and Radio Buttons
-
-```typescript
-// Checkboxes
+// Checkboxes and radio buttons
 await auto("check the terms and conditions box");
-await auto('check the "Remember me" option');
-await auto("uncheck newsletter subscription");
-
-// Radio buttons
 await auto('select "Express Shipping" radio option');
-await auto('choose "Credit Card" payment method');
-```
 
-## Advanced Form Handling
-
-### Complex Forms
-
-```typescript
-async function fillComplexForm() {
-	await auto("go to registration form");
-
-	// Personal information
-	await auto('type "John" in first name field');
-	await auto('type "Doe" in last name field');
-	await auto('fill "Date of Birth" with "1990-01-01"');
-
-	// Contact details
-	await auto('type "john.doe@example.com" in email');
-	await auto('enter "+1 (555) 123-4567" in phone field');
-
-	// Address
-	await auto('type "123 Main St" in street address');
-	await auto('type "Apt 4B" in apartment field');
-	await auto('type "New York" in city field');
-	await auto('select "New York" from state dropdown');
-	await auto('type "10001" in zip code field');
-
-	// Preferences
-	await auto('select "English" as preferred language');
-	await auto("check marketing communications consent");
-}
-```
-
-### Form Validation
-
-```typescript
-// Input validation
-await auto("verify email field is valid");
-await auto("check if password meets requirements");
-
-// Required fields
-await auto("verify all required fields are filled");
-await auto("highlight missing required fields");
-
-// Custom validation
-await auto("validate phone number format");
-await auto("check if passwords match");
-```
-
-### File Uploads
-
-```typescript
-// Single file upload
+// File uploads
 await auto('upload "document.pdf" to file input');
-
-// Multiple files
-await auto('upload files "image1.jpg, image2.jpg" to gallery');
-
-// Drag and drop
 await auto('drag "document.pdf" to upload zone');
 ```
 
-## Best Practices
+## Key Features
 
-### 1. Form Organization
-
-```typescript
-// Group related fields
-async function fillPersonalInfo() {
-	await auto("fill personal information section");
-	await auto("proceed to contact details");
-	await auto("complete address fields");
-}
-```
-
-### 2. Error Handling
-
-```typescript
-// Handle validation errors
-try {
-	await auto("submit the form");
-} catch (error) {
-	await auto("verify error messages");
-	await auto("correct invalid fields");
-	await auto("resubmit the form");
-}
-```
-
-### 3. State Management
-
-```typescript
-// Check form state
-await auto("verify form is editable");
-await auto("check if form has unsaved changes");
-await auto("confirm form is ready to submit");
-```
-
-## Common Patterns
-
-### 1. Multi-step Forms
-
-```typescript
-async function completeMultiStepForm() {
-	// Step 1: Personal Info
-	await auto("fill personal information");
-	await auto("click next");
-
-	// Step 2: Account Details
-	await auto("complete account setup");
-	await auto("click next");
-
-	// Step 3: Preferences
-	await auto("set user preferences");
-	await auto("click finish");
-}
-```
-
-### 2. Dynamic Forms
-
-```typescript
-async function handleDynamicForm() {
-	// Conditional fields
-	await auto('select "Other" from category');
-	await auto("fill additional details when shown");
-
-	// Dynamic validation
-	await auto("wait for field validation");
-	await auto("respond to validation feedback");
-}
-```
-
-### 3. Search Forms
-
-```typescript
-async function searchWithFilters() {
-	// Basic search
-	await auto('type "product" in search field');
-
-	// Add filters
-	await auto('select "Electronics" from category filter');
-	await auto('set price range "$10 to $100"');
-	await auto('check "In Stock" option');
-
-	// Apply search
-	await auto("click search button");
-}
-```
-
-## Troubleshooting
-
-Common form issues and solutions:
-
-1. **Field Not Interactable**
-
-```typescript
-// Handle overlays
-await auto("close any dialogs blocking the form");
-await auto("scroll to form field");
-await auto("interact with field");
-```
-
-2. **Form Reset Issues**
-
-```typescript
-// Handle form resets
-await auto("save form progress");
-await auto("restore form data if needed");
-await auto("continue filling form");
-```
-
-3. **Submission Errors**
-
-```typescript
-// Handle submission failures
-await auto("verify form submission status");
-await auto("retry submission if failed");
-await auto("check for error messages");
-```
+- **All Form Elements**: Text inputs, dropdowns, checkboxes, radio buttons, file uploads
+- **Smart Validation**: Automatic form validation and error handling
+- **Multi-step Support**: Handle complex forms with multiple steps
+- **State Management**: Track form progress and handle dynamic fields
 
 ## Next Steps
 

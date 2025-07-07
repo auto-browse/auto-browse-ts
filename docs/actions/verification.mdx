@@ -67,116 +67,34 @@ await auto('verify "Express shipping" is selected');
 await auto('check if "Credit card" option is checked');
 ```
 
-## Best Practices
+## Common Use Cases
 
-### 1. Clear and Specific Assertions
-
-```typescript
-// Good - Clear what to verify
-await auto('verify login button shows "Sign In"');
-await auto("check if error message is visible");
-
-// Less Clear - Ambiguous
-await auto("verify button");
-await auto("check text");
-```
-
-### 2. Proper Wait States
+**Element States and Content Verification**
 
 ```typescript
-// Good - Waits for state
-await auto("wait for button to be enabled then verify");
-await auto("verify message appears after loading");
+// Verify visibility and text
+await auto("verify the login button is visible");
+await auto('verify heading text is "Welcome"');
 
-// Not Recommended - No wait
-await auto("verify button is enabled");
+// Check element states
+await auto("verify submit button is enabled");
+await auto("check if save button is clickable");
+
+// Verify checkbox and radio states
+await auto('verify "Remember me" checkbox is checked');
+await auto('verify "Express shipping" is selected');
+
+// Wait and verify dynamic content
+await auto("wait for loading spinner to disappear");
+await auto("verify success message becomes visible");
 ```
 
-### 3. Error Handling
+## Key Features
 
-```typescript
-try {
-	await auto("verify form submission succeeded");
-} catch (error) {
-	// Handle specific assertion failures
-	if (error.message.includes("not visible")) {
-		await auto("check if error message is shown");
-	}
-}
-```
-
-## Common Patterns
-
-### 1. Form Validation
-
-```typescript
-async function validateForm() {
-	// Check initial state
-	await auto("verify submit button is enabled");
-
-	// Submit empty form
-	await auto("click submit");
-	await auto("verify error message is visible");
-	await auto('check if error says "Required fields missing"');
-}
-```
-
-### 2. Login Flow
-
-```typescript
-async function verifyLogin() {
-	// Pre-login state
-	await auto("verify login button is visible");
-
-	// After login
-	await auto('type "user@example.com" in email');
-	await auto('type "password" in password');
-	await auto("click login");
-	await auto("verify welcome message is visible");
-}
-```
-
-### 3. Interactive Elements
-
-```typescript
-async function verifyInteractions() {
-	// Button states
-	await auto("verify button is enabled");
-	await auto("click button");
-
-	// Checkbox interactions
-	await auto("click remember me checkbox");
-	await auto("verify checkbox is checked");
-}
-```
-
-## Troubleshooting
-
-Common verification issues and solutions:
-
-1. **Visibility Issues**
-
-```typescript
-// Handle element visibility
-await auto("scroll element into view");
-await auto("verify element is visible");
-```
-
-2. **Timing Issues**
-
-```typescript
-// Handle loading states
-await auto("wait for loading to complete");
-await auto("verify content is visible");
-```
-
-3. **State Changes**
-
-```typescript
-// Handle dynamic states
-await auto("click to change state");
-await auto("verify new state is correct");
-```
+- **Four Assertion Types**: Visibility, text content, element state, and checkbox/radio state
+- **Smart Waiting**: Automatically waits for elements to reach expected states
+- **Flexible Matching**: Supports exact text and partial content matching
+- **Error Handling**: Clear feedback when assertions fail
 
 ## Next Steps
 

@@ -50,175 +50,29 @@ async function example() {
    - Handles navigation events
    - Maintains context between commands
 
-## Integration Modes
+## Integration Example
 
-### 1. Standalone Mode
+Auto-Browse works seamlessly with both standalone and Playwright modes:
 
 ```typescript
 import { auto } from "auto-browse";
 
-async function standalone() {
-	// Auto-Browse manages everything
+async function example() {
+	// Auto-Browse manages everything automatically
 	await auto("go to https://example.com");
 	await auto("click Sign Up");
 	await auto('type "user@example.com" in email field');
+	await auto("submit form");
+	await auto("verify success message");
 }
 ```
 
-### 2. Playwright Integration
+## Key Benefits
 
-```typescript
-import { test } from "@playwright/test";
-import { auto } from "auto-browse";
-
-test("with playwright", async ({ page }) => {
-	// Auto-Browse detects Playwright's page context
-	await page.goto("https://example.com");
-	await auto("click the login button");
-	await auto('type "password123" in password field');
-});
-```
-
-## Advanced Features
-
-### Multi-Page Handling
-
-Auto-Browse can handle multiple pages intelligently:
-
-```typescript
-import { auto } from "auto-browse";
-
-async function multiPage() {
-	// Open first page
-	await auto("go to https://example.com");
-
-	// Open new tab
-	await auto("click open in new tab");
-
-	// Auto-Browse switches to new page automatically
-	await auto("verify new page is loaded");
-
-	// Switch back to original page
-	await auto("switch to first tab");
-}
-```
-
-### Window Management
-
-Handles different window scenarios:
-
-```typescript
-import { auto } from "auto-browse";
-
-async function windowManagement() {
-	await auto("go to https://example.com");
-
-	// Handle popups
-	await auto("click button that opens popup");
-	await auto("switch to popup window");
-	await auto("verify popup content");
-	await auto("close popup");
-
-	// Back to main window automatically
-	await auto("verify main window is active");
-}
-```
-
-## Best Practices
-
-1. **Let Auto-Browse Handle Context**
-
-```typescript
-// Good - Auto-Browse manages context
-await auto("perform action");
-
-// Unnecessary - don't create context manually
-const browser = await chromium.launch();
-const page = await browser.newPage();
-await auto("perform action", { page });
-```
-
-2. **Trust the State Management**
-
-```typescript
-// Good - state is managed automatically
-await auto("click login");
-await auto("verify dashboard");
-
-// Unnecessary - don't force waits
-await auto("click login");
-await page.waitForTimeout(1000); // Not needed
-await auto("verify dashboard");
-```
-
-3. **Clean Error Handling**
-
-```typescript
-try {
-	await auto("perform complex action");
-} catch (error) {
-	// Auto-Browse will clean up resources
-	console.error("Action failed:", error);
-}
-// No need to manually close browser/pages
-```
-
-## Common Scenarios
-
-### 1. Form Interactions
-
-```typescript
-async function formExample() {
-	await auto("go to form page");
-	await auto('fill "John Doe" in name field'); // Automatic context
-	await auto('select "Option 1" from dropdown'); // Maintains state
-	await auto("submit form"); // Handles navigation
-}
-```
-
-### 2. Multi-Step Workflows
-
-```typescript
-async function workflowExample() {
-	await auto("start at homepage");
-	await auto("add item to cart");
-	await auto("go to checkout"); // Handles page changes
-	await auto("complete payment form");
-	await auto("confirm order"); // Manages async operations
-}
-```
-
-### 3. Dynamic Content
-
-```typescript
-async function dynamicExample() {
-	await auto("go to dynamic page");
-	await auto("click load more button");
-	await auto("verify new content loaded"); // Waits automatically
-	await auto("scroll to bottom");
-	await auto("verify infinite scroll worked");
-}
-```
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **Page Context Issues**
-
-```typescript
-// If page context is lost
-await auto("take a snapshot"); // Forces context refresh
-await auto("continue actions");
-```
-
-2. **State Synchronization**
-
-```typescript
-// If state seems out of sync
-await auto("verify current state"); // Resets internal state
-await auto("proceed with action");
-```
+- **Automatic Context Management**: No need to manually create or manage browser/page instances
+- **State Tracking**: Maintains context between commands automatically
+- **Multi-Page Support**: Handles tabs, popups, and navigation seamlessly
+- **Error Handling**: Cleans up resources automatically on errors
 
 ## Next Steps
 

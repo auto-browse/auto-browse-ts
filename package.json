@@ -1,7 +1,8 @@
 {
   "name": "@auto-browse/auto-browse",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AI-powered browser automation",
+  "type": "module",
   "author": "auto-browse",
   "homepage": "https://www.auto-browse.com/",
   "repository": {
@@ -11,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/auto-browse/auto-browse-ts/issues"
   },
-  "documentation": "https://typescript.docs.auto-browse.com/introduction",
+  "documentation": "https://typescript.docs.auto-browse.com/quickstart",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -19,12 +20,12 @@
     "test": "playwright test",
     "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint . --fix && tsc --noEmit",
     "postinstall": "playwright install --with-deps",
     "clean": "rm -rf dist",
     "check": "npm run format && npm run lint",
-    "prepublishOnly": "npm run clean && npm run build && npm run format && npm run lint",
-    "publish-package": "npm run clean && npm run build && npm run format && npm run lint && npm publish --access public"
+    "prepublishOnly": "npm run clean && npm run build && npm run lint",
+    "publish-package": "npm run clean && npm run build && npm run lint && npm publish --access public"
   },
   "keywords": [
     "playwright",
@@ -51,22 +52,32 @@
     "@langchain/langgraph": "^0.2.60",
     "@langchain/ollama": "^0.2.0",
     "@langchain/openai": "^0.5.0",
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "@playwright/test": "1.52.0-alpha-1743011787000",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@playwright/test": "1.53.0",
+    "debug": "^4.4.1",
     "dotenv": "^16.4.7",
-    "playwright": "1.52.0-alpha-1743011787000",
+    "mime": "^4.0.7",
+    "playwright": "1.53.0",
     "posthog-node": "^4.11.3",
+    "ws": "^8.18.1",
     "yaml": "^2.7.1",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.4"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^3.1.0",
+    "@types/chrome": "^0.0.315",
+    "@types/debug": "^4.1.12",
     "@types/dotenv": "^6.1.1",
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "eslint": "^9.19.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-notice": "^1.0.0",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.8.2"
   },
   "files": [
     "dist"

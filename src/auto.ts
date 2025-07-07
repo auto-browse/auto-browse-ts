@@ -1,36 +1,52 @@
 import { test as base } from '@playwright/test';
 import { z } from 'zod';
-import { AutoConfig } from './types';
-import { sessionManager, context } from './browser';
-import { captureAutoCall, shutdown } from './analytics';
+import { AutoConfig } from './types.js';
+import { context } from './context.js';
+import { sessionManager } from './session-manager.js';
+import { captureAutoCall, shutdown } from './analytics.js';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { HumanMessage } from '@langchain/core/messages';
-import { createLLMModel } from './llm';
-import {
-  browser_click,
-  browser_type,
-  browser_get_text,
-  browser_navigate,
-  browser_snapshot,
-  browser_hover,
-  browser_drag,
-  browser_select_option,
-  browser_take_screenshot,
-  browser_go_back,
-  browser_wait,
-  browser_press_key,
-  browser_save_pdf,
-  browser_choose_file,
-  browser_go_forward,
-  browser_assert,
-  browser_page_assert
-} from './tools';
+import { createLLMModel } from './llm.js';
+import { Tool } from '@langchain/core/tools';
+import snapshot from './tools/snapshot.js';
+import navigateTools from './tools/navigate.js';
+import assertTools from './tools/assert.js';
+import consoleTools from './tools/console.js';
+import dialogTools from './tools/dialogs.js';
+import fileTools from './tools/files.js';
+import keyboardTools from './tools/keyboard.js';
+import networkTools from './tools/network.js';
+import tabTools from './tools/tabs.js';
+import testingTools from './tools/testing.js';
+import waitTools from './tools/wait.js';
+import commonTools from './tools/common.js';
+
+import { createLangChainTool } from './tools/tool.js';
+
+
+// Convert our custom tools to LangChain tools
+const allTools = [
+  ...navigateTools(true),
+  ...snapshot,
+  ...assertTools,
+  ...consoleTools,
+  ...dialogTools(true),
+  ...fileTools(true),
+  ...keyboardTools(true),
+  ...networkTools,
+  ...tabTools(true),
+  ...testingTools,
+  ...waitTools(true),
+  ...commonTools(true)
+].map(customTool => createLangChainTool(customTool));
+const browserTools = [...allTools] as Tool[];
+// const browserTools = snapshot.map(createLangChainTool) as unknown as Tool[];
 
 // Define response schema
 const AutoResponseSchema = z.object({
   action: z
-    .string()
-    .describe('The type of action performed (assert, click, type, etc)'),
+      .string()
+      .describe('The type of action performed (assert, click, type, etc)'),
   exception: z.string().describe('Error message if any, empty string if none'),
   output: z.string().describe('Raw output from the action')
 });
@@ -274,27 +290,9 @@ Remember:
 - Distinguish between tool errors and application behavior
 - Maintain accurate state tracking`;
 
-  const all_tools = [
-    browser_click,
-    browser_type,
-    browser_get_text,
-    browser_navigate,
-    browser_snapshot,
-    browser_hover,
-    browser_drag,
-    browser_select_option,
-    browser_take_screenshot,
-    browser_go_back,
-    browser_wait,
-    browser_press_key,
-    browser_save_pdf,
-    browser_choose_file,
-    browser_assert,
-    browser_go_forward,
-    browser_page_assert
-  ];
+  const all_tools = browserTools;
   const agent = createReactAgent({
-    //llm: model.bindTools(all_tools, { parallel_tool_calls: false }),
+    // llm: model.bindTools(all_tools, { parallel_tool_calls: false }),
     llm: model,
     tools: all_tools,
     stateModifier: prompt,
@@ -320,17 +318,13 @@ export async function auto(
   console.log(`[Auto] Processing instruction: "${instruction}"`);
   await captureAutoCall();
 
-  if (config?.page)
-  {
+  if (config?.page) {
     sessionManager.setPage(config.page);
     console.log(`[Auto] Page set from config`);
-  } else
-  {
-    try
-    {
+  } else {
+    try {
       sessionManager.getPage();
-    } catch
-    {
+    } catch {
       // In standalone mode, create a new page
       console.log(`[Auto] No existing page, creating new page`);
       await context.createPage();
@@ -345,16 +339,14 @@ export async function auto(
   });
   const result = response.structuredResponse;
   // Process agent result
-  try
-  {
+  try {
     console.log(`[Auto] Agent response:`, result);
 
     // Parse and validate the response
     const validatedResponse = AutoResponseSchema.parse(result);
 
     console.log(`[Auto] Action: ${validatedResponse.action}`);
-    if (validatedResponse.exception && validatedResponse.exception !== 'None' && validatedResponse.exception !== '' && validatedResponse.exception !== 'null' && validatedResponse.exception !== 'NA')
-    {
+    if (validatedResponse.exception && validatedResponse.exception !== 'None' && validatedResponse.exception !== '' && validatedResponse.exception !== 'null' && validatedResponse.exception !== 'NA') {
       console.log(`[Auto] Error: ${validatedResponse.exception}`);
       throw {
         error: validatedResponse.exception,
@@ -364,8 +356,7 @@ export async function auto(
 
     // Return the output or null if successful with no output
     return validatedResponse.output || null;
-  } catch (error)
-  {
+  } catch (error) {
     console.log(`[Auto] Error processing response:`, error);
 
     throw error;
@@ -378,5 +369,5 @@ process.on('beforeExit', async () => {
 });
 
 // Export everything needed for the package
-export { sessionManager } from './browser';
-export * from './types';
+export { sessionManager } from './session-manager.js';
+export * from './types.js';

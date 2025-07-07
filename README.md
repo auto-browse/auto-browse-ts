@@ -22,105 +22,49 @@ npm install @auto-browse/auto-browse
 
 ## ⚠️ Important: Playwright Version Requirements
 
-> **Note:** Auto Browse currently requires specific versions of Playwright. This requirement will be relaxed in future versions.
+Auto Browse requires Playwright version 1.53.0 or higher.
 
 ### Required Versions
 
 ```bash
-"@playwright/test": "1.52.0-alpha-1743011787000"
-"playwright": "1.52.0-alpha-1743011787000"
+"@playwright/test": ">=1.53.0"
+"playwright": ">=1.53.0"
 ```
 
-### Version Conflicts
+### Installation
 
-If you're using Auto Browse alongside an existing Playwright setup, you must upgrade to these specific versions. Here's how to handle common issues:
+If you encounter version conflicts, use the legacy peer deps flag:
 
-1. **Installation Conflicts**
+```bash
+npm install --legacy-peer-deps
+```
 
-   ```bash
-   npm install --legacy-peer-deps
-   ```
+## Quick Setup
 
-   This flag helps resolve peer dependency conflicts during installation.
-
-2. **Multiple Playwright Versions**
-
-   - Remove existing Playwright installations
-   - Clear npm cache if needed: `npm cache clean --force`
-   - Reinstall with the required versions
-
-3. **Project Compatibility**
-   - Update your project's Playwright configuration
-   - Ensure your existing tests are compatible with the alpha version
-   - Consider using a separate test environment if needed
-
-> 🔄 Future releases will support a wider range of Playwright versions. Subscribe to our GitHub repository for updates.
-
-## Configuration
-
-Auto Browse requires environment variables for the LLM (Language Model) configuration. Create a `.env` file in your project root:
+1. Create a `.env` file in your project root:
 
 ```env
-# OpenAI (default)
+# For OpenAI (default)
 OPENAI_API_KEY=your_openai_api_key_here
-LLM_PROVIDER=openai  # Optional, defaults to openai
-AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional, defaults to gpt-4o-mini
+LLM_PROVIDER=openai  # Optional
+AUTOBROWSE_LLM_MODEL=gpt-4o-mini  # Optional
 
-# Google AI
+# Or for Google AI
 GOOGLE_API_KEY=your_google_key_here
 LLM_PROVIDER=google
 AUTOBROWSE_LLM_MODEL=gemini-2.0-flash-lite
-
-# Azure OpenAI
-AZURE_OPENAI_API_KEY=your_azure_key_here
-AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
-AZURE_OPENAI_API_VERSION=2024-12-01-preview
-AZURE_OPENAI_API_DEPLOYMENT_NAME=your-deployment-name
-LLM_PROVIDER=azure
-
-# Anthropic
-ANTHROPIC_API_KEY=your_anthropic_key_here
-LLM_PROVIDER=anthropic
-AUTOBROWSE_LLM_MODEL=claude-3
-
-# Google Vertex AI
-GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
-LLM_PROVIDER=vertex
-
-# Ollama
-BASE_URL=http://localhost:11434  # Optional, defaults to this value
-LLM_PROVIDER=ollama
-AUTOBROWSE_LLM_MODEL=llama3.1
 ```
 
-You can find an example configuration in `example.env`.
-
-### Environment Variables
-
-| Variable                           | Description                            | Default                  | Required For |
-| ---------------------------------- | -------------------------------------- | ------------------------ | ------------ |
-| `LLM_PROVIDER`                     | LLM provider to use                    | `openai`                 | No           |
-| `AUTOBROWSE_LLM_MODEL`             | The LLM model to use                   | `gpt-4o-mini`            | No           |
-| `OPENAI_API_KEY`                   | OpenAI API key                         | -                        | OpenAI       |
-| `GOOGLE_API_KEY`                   | Google AI API key                      | -                        | Google AI    |
-| `AZURE_OPENAI_API_KEY`             | Azure OpenAI API key                   | -                        | Azure        |
-| `AZURE_OPENAI_ENDPOINT`            | Azure OpenAI endpoint URL              | -                        | Azure        |
-| `AZURE_OPENAI_API_VERSION`         | Azure OpenAI API version               | `2024-12-01-preview`     | Azure        |
-| `AZURE_OPENAI_API_DEPLOYMENT_NAME` | Azure OpenAI deployment name           | -                        | Azure        |
-| `ANTHROPIC_API_KEY`                | Anthropic API key                      | -                        | Anthropic    |
-| `GOOGLE_APPLICATION_CREDENTIALS`   | Path to Google Vertex credentials file | -                        | Vertex AI    |
-| `BASE_URL`                         | Ollama API endpoint                    | `http://localhost:11434` | No           |
+2. Start automating!
 
 ## Supported LLM Providers
 
-Auto Browse supports multiple LLM providers:
-
-- OpenAI (default) - GPT-4 and compatible models
-- Google AI - Gemini models
-- Azure OpenAI - GPT models on Azure
-- Anthropic - Claude models
-- Google Vertex AI - PaLM and Gemini models
-- Ollama - Run models locally
+- **OpenAI** (default) - GPT-4 and compatible models
+- **Google AI** - Gemini models
+- **Azure OpenAI** - GPT models on Azure
+- **Anthropic** - Claude models
+- **Google Vertex AI** - PaLM and Gemini models
+- **Ollama** - Run models locally
 
 ## Usage
 
@@ -211,125 +155,65 @@ test("simplified example", async ({ page }) => {
 
 ### BDD Mode with Playwright-BDD
 
-Auto Browse seamlessly integrates with [playwright-bdd](https://github.com/vitalets/playwright-bdd) for behavior-driven development. This allows you to write expressive feature files and implement steps using natural language commands.
-
-#### Example Feature File
+Auto Browse integrates with [playwright-bdd](https://github.com/vitalets/playwright-bdd) for behavior-driven development:
 
 ```gherkin
 # features/homepage.feature
 Feature: Playwright Home Page
-
   Scenario: Check title
     Given navigate to https://playwright.dev
     When click link "Get started"
     Then assert title "Installation"
 ```
 
-#### Step Definitions
-
 ```typescript
+// One step definition handles all actions
 import { auto } from "@auto-browse/auto-browse";
 import { Given, When as aistep, Then } from "./fixtures";
 
-// Generic step that handles any natural language action
 aistep(/^(.*)$/, async ({ page }, action: string) => {
 	await auto(action, { page });
 });
 ```
 
-#### Setup Requirements
-
-1. Install dependencies:
-
-```bash
-npm install --save-dev @playwright/test @cucumber/cucumber playwright-bdd
-```
-
-2. Configure `playwright.config.ts`:
+### Key Actions
 
 ```typescript
-import { PlaywrightTestConfig } from "@playwright/test";
+// Navigation
+await auto("go to https://example.com");
 
-const config: PlaywrightTestConfig = {
-	testDir: "./features",
-	use: {
-		baseURL: "https://playwright.dev"
-	}
-};
+// Clicking
+await auto("click the submit button");
 
-export default config;
+// Typing
+await auto('type "username" in the email field');
+
+// Verification
+await auto("verify the success message is visible");
+
+// Taking snapshots
+await auto("take a snapshot");
 ```
 
-This integration enables:
+## Core Features
 
-- Natural language test scenarios
-- Reusable step definitions
-- Cucumber reporter integration
-- Built-in Playwright context management
+- **Natural Language Commands** - Write automation in plain English
+- **AI-Powered Intelligence** - Smart element detection and interaction
+- **Auto Context Detection** - Automatically manages browser and page contexts
+- **Multiple LLM Support** - Works with OpenAI, Google AI, Anthropic, and more
+- **Playwright Integration** - Seamless integration with Playwright tests
+- **TypeScript Support** - Full type safety and IntelliSense
+- **Zero Configuration** - Works out of the box with minimal setup
 
-### Supported Actions
+## Documentation
 
-1. **Clicking Elements**
-
-   ```typescript
-   await auto("click the submit button");
-   await auto("click the link that says Learn More");
-   ```
-
-2. **Typing Text**
-
-   ```typescript
-   await auto('type "username" in the email field');
-   await auto('enter "password123" in the password input');
-   ```
-
-## Features
-
-Core Features:
-
-- Natural language commands for browser automation
-- AI-powered computer and browser agent
-- Automate any browser task
-- Automatic page/context detection
-- TypeScript support
-- Playwright test integration
-- Zero configuration required
-
-Supported Operations:
-
-- Page Navigation (goto URL, back, forward)
-- Element Interactions (click, type, hover, drag-and-drop)
-- Form Handling (select options, file uploads, form submission)
-- Visual Verification (snapshots, screenshots, PDF export)
-- Keyboard Control (key press, text input)
-- Wait and Timing Control
-- Assertions and Validation
+📚 [Full Documentation](https://typescript.docs.auto-browse.com/quickstart) - Complete guides, examples, and API reference
 
 ## Best Practices
 
-1. **Be Descriptive**
-
-   ```typescript
-   // Good
-   await auto("click the submit button in the login form");
-
-   // Less Clear
-   await auto("click submit");
-   ```
-
-2. **Use Quotes for Input Values**
-
-   ```typescript
-   // Good
-   await auto('type "John Doe" in the name field');
-
-   // Not Recommended
-   await auto("type John Doe in the name field");
-   ```
-
-3. **Leverage Existing Labels**
-   - Use actual labels and text from your UI in commands
-   - Maintain good accessibility practices in your app for better automation
+- **Be descriptive**: `"click the submit button in the login form"` vs `"click submit"`
+- **Use quotes for values**: `'type "John Doe" in the name field'`
+- **Take snapshots**: `"take a snapshot"` helps the AI understand page context
 
 ## Contributing
 
