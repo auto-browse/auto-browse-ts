@@ -8,74 +8,54 @@
     "dark": "#ff4f4f"
   },
   "favicon": "/logo.svg",
-  "navigation": {
-    "tabs": [
-      {
-        "tab": "Getting Started",
-        "groups": [
-          {
-            "group": "Guide",
-            "pages": [
-              "introduction",
-              "faq",
-              "quickstart",
-              "installation",
-              "environment-setup"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Usage",
-        "groups": [
-          {
-            "group": "Usage Modes",
-            "pages": [
-              "usage/standalone-mode",
-              "usage/playwright-test-mode",
-              "usage/auto-detection-mode",
-              "usage/bdd-mode"
-            ]
-          },
-          {
-            "group": "Actions",
-            "pages": [
-              "actions/clicking",
-              "actions/typing",
-              "actions/navigation",
-              "actions/forms",
-              "actions/verification"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Features",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "features"
-            ]
-          }
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/auto-browse/auto-browse-ts",
-          "icon": "github"
-        },
-        {
-          "anchor": "NPM",
-          "href": "https://www.npmjs.com/package/@auto-browse/auto-browse",
-          "icon": "npm"
-        }
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "quickstart",
+        "installation",
+        "environment-setup"
+      ]
+    },
+    {
+      "group": "Usage Modes",
+      "pages": [
+        "usage/standalone-mode",
+        "usage/playwright-test-mode",
+        "usage/auto-detection-mode",
+        "usage/bdd-mode"
+      ]
+    },
+    {
+      "group": "Actions",
+      "pages": [
+        "actions/clicking",
+        "actions/typing",
+        "actions/navigation",
+        "actions/forms",
+        "actions/verification"
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
+        "features",
+        "faq"
       ]
     }
-  },
+  ],
+  "anchors": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/auto-browse/auto-browse-ts",
+      "icon": "github"
+    },
+    {
+      "name": "NPM",
+      "url": "https://www.npmjs.com/package/@auto-browse/auto-browse",
+      "icon": "npm"
+    }
+  ],
   "footerSocials": {
     "github": "https://github.com/auto-browse/auto-browse"
   }

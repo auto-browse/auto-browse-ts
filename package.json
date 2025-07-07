@@ -1,6 +1,6 @@
 {
   "name": "@auto-browse/auto-browse",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AI-powered browser automation",
   "type": "module",
   "author": "auto-browse",

@@ -131,7 +131,7 @@ await auto('type "user@example.com" in input');
 
 ## Common Use Cases
 
-1. **Web Scraping**
+**Web Scraping**
 
 ```typescript
 async function scrapeData() {
@@ -143,37 +143,6 @@ async function scrapeData() {
 
 	// Get specific product details
 	const price = await auto('get the price for product "Example Item"');
-}
-```
-
-2. **Site Testing**
-
-```typescript
-async function testSite() {
-	await auto("go to https://example.com");
-
-	// Check navigation
-	await auto("verify the main navigation menu is visible");
-	await auto("click the About link");
-	await auto("verify the URL contains /about");
-
-	// Test responsiveness
-	await auto("set viewport to mobile size");
-	await auto("verify the mobile menu button is visible");
-}
-```
-
-3. **Data Entry Automation**
-
-```typescript
-async function enterData(records) {
-	for (const record of records) {
-		await auto("click the Add New button");
-		await auto(`type "${record.name}" in the name field`);
-		await auto(`type "${record.email}" in the email field`);
-		await auto("click Save");
-		await auto("verify success message is shown");
-	}
 }
 ```
 
