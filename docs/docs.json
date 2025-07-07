@@ -9,51 +9,59 @@
   },
   "favicon": "/logo.svg",
   "navigation": {
-    
+    "dropdowns": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "quickstart",
-          "installation",
-          "environment-setup"
+        "dropdown": "Documentation",
+        "icon": "book",
+        "description": "Complete Auto-Browse documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "quickstart",
+              "installation",
+              "environment-setup"
+            ]
+          },
+          {
+            "group": "Usage Modes",
+            "pages": [
+              "usage/standalone-mode",
+              "usage/playwright-test-mode",
+              "usage/auto-detection-mode",
+              "usage/bdd-mode"
+            ]
+          },
+          {
+            "group": "Actions",
+            "pages": [
+              "actions/clicking",
+              "actions/typing",
+              "actions/navigation",
+              "actions/forms",
+              "actions/verification"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "features",
+              "faq"
+            ]
+          }
         ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/auto-browse/auto-browse-ts"
       },
       {
-        "group": "Usage Modes",
-        "pages": [
-          "usage/standalone-mode",
-          "usage/playwright-test-mode",
-          "usage/auto-detection-mode",
-          "usage/bdd-mode"
-        ]
-      },
-      {
-        "group": "Actions",
-        "pages": [
-          "actions/clicking",
-          "actions/typing",
-          "actions/navigation",
-          "actions/forms",
-          "actions/verification"
-        ]
-      },
-      {
-        "group": "Reference",
-        "pages": [
-          "features",
-          "faq"
-        ]
-      },
-    "anchors": [
-      {
-        "anchor": "GitHub",
-        "href": "https://github.com/auto-browse/auto-browse-ts",
-        "icon": "github"
-      },
-      {
-        "anchor": "NPM",
-        "href": "https://www.npmjs.com/package/@auto-browse/auto-browse",
-        "icon": "npm"
+        "label": "NPM",
+        "href": "https://www.npmjs.com/package/@auto-browse/auto-browse"
       }
     ]
   },
