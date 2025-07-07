@@ -9,7 +9,7 @@
   },
   "favicon": "/logo.svg",
   "navigation": {
-    "groups": [
+    
       {
         "group": "Getting Started",
         "pages": [
@@ -43,8 +43,7 @@
           "features",
           "faq"
         ]
-      }
-    ],
+      },
     "anchors": [
       {
         "anchor": "GitHub",
